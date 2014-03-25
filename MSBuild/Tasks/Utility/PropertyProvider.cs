@@ -1,6 +1,6 @@
 ﻿//===========================================================================
 // MODULE:  PropertyProvider.cs
-// PURPOSE: Assembly property reader
+// PURPOSE: Assembly and NuBuild project property reader
 // 
 // Copyright © 2012
 // Brent M. Spell. All rights reserved.

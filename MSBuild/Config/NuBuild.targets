@@ -60,19 +60,18 @@
          <CopyToOutputDirectoryItems                Include="@(_SourceItemsToCopyToOutputDirectoryAlways->'%(FullPath)');@(_SourceItemsToCopyToOutputDirectory->'%(FullPath)')"/>
       </ItemGroup>
    </Target>
-   <!-- Target: Prepare 
+   <!-- Target: PrepareBuild 
       . initializes the Compile build items, adding custom metadata
       . generates the NuSources and NuTargets items for incremental building
    -->
-   <Target Name="__Prepare"
+   <Target Name="__PrepareBuild"
            DependsOnTargets="__GetCopyToOutputDirectoryItems">
       <MSBuild Projects="@(ProjectReference)" UseResultsCache="true">
          <Output TaskParameter="TargetOutputs" ItemName="__ReferenceLibraries" />
       </MSBuild>
-      <NuPrepare ProjectPath="$(MSBuildProjectFullPath)"
+      <NuPrepareBuild ProjectPath="$(MSBuildProjectFullPath)"
                  NuSpec="@(Compile)"
                  Embedded="@(EmbeddedResource)"
-                 ProjectName="$(MSBuildProjectName)"
                  VersionSource="$(NuBuildVersionSource)"
                  VersionFileName="$(NuBuildVersionFileName)"
                  IntermediateOutputPath="$(BaseIntermediateOutputPath)"
@@ -82,7 +81,7 @@
          <Output TaskParameter="Prepared" ItemName="NuPrepared"/>
          <Output TaskParameter="Sources" ItemName="NuSources"/>
          <Output TaskParameter="Targets" ItemName="NuTargets"/>
-      </NuPrepare>
+      </NuPrepareBuild>
       <ItemGroup>
          <NuSources Include="$(MSBuildProjectFile);"/>
       </ItemGroup>
@@ -92,10 +91,25 @@
       <Message Text="NuSources: @(NuSources)"/>
       <Message Text="NuTargets: @(NuTargets)"/>
    </Target>
+   <!-- Target: PrepareClean
+      . initializes the Compile build items, adding custom metadata
+      . generates the NuTargets items for the clean
+   -->
+   <Target Name="__PrepareClean"
+           DependsOnTargets="__GetCopyToOutputDirectoryItems">
+      <NuPrepareClean ProjectPath="$(MSBuildProjectFullPath)"
+                      IntermediateOutputPath="$(BaseIntermediateOutputPath)">
+         <Output TaskParameter="Targets" ItemName="NuTargets"/>
+      </NuPrepareClean>
+      <ItemGroup>
+         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutputPath)%(TargetPath)');"/>
+      </ItemGroup>
+      <Message Text="NuTargets: @(NuTargets)"/>
+   </Target>   
    <!-- Target: Clean 
       . removes all .nupkg files from the output path
    -->
-   <Target Name="Clean" DependsOnTargets="__Prepare;BeforeClean">
+   <Target Name="Clean" DependsOnTargets="__PrepareClean;BeforeClean">
       <Delete Files="@(NuTargets)"/>
       <CallTarget Targets="AfterClean"/>
    </Target>
@@ -103,7 +117,7 @@
       . creates a .nupkg file for each .nuspec file in the project
    -->
    <Target Name="Build"
-           DependsOnTargets="__Prepare;BeforeBuild"
+           DependsOnTargets="__PrepareBuild;BeforeBuild"
            Inputs="@(NuSources)"
            Outputs="@(NuTargets)">
       <NuPackage ProjectPath="$(MSBuildProjectFullPath)"
