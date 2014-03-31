@@ -54,6 +54,7 @@
     <Compile Include="NuPrepareBuild.cs" />
     <Compile Include="NuPackage.cs" />
     <Compile Include="Utility\AssemblyReader.cs" />
+    <Compile Include="Utility\DependencyManager.cs" />
     <Compile Include="Utility\GacApi.cs" />
     <Compile Include="Utility\IPropertyProviderExtensions.cs" />
     <Compile Include="Utility\MinimalSetWalker.cs" />
