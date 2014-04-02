@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
    <!-- NuBuild Tasks -->
-   <Import Project="$(MSBuildExtensionsPath32)\NuBuild\v1\NuBuild.tasks" />
+   <Import Project="$(MSBuildThisFileDirectory)\NuBuild.tasks" />
    <!-- MSBuild 4.5 Properties -->
    <PropertyGroup>
       <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">obj\</BaseIntermediateOutputPath>
-      <OutputPath Condition="'$(OutDir)' != '' AND '$(GenerateProjectSpecificOutputFolder)' == 'true'">$(OutDir)\$(MSBuildProjectName)</OutputPath>
-      <OutputPath Condition="'$(OutDir)' != '' AND '$(GenerateProjectSpecificOutputFolder)' != 'true'">$(OutDir)</OutputPath>
+      <!-- old project files do not include MS.Common.targets, GenerateProjectSpecificOutputFolder has to be handled here only in that case (OutDirWasSpecified=='') -->
+      <OutputPath Condition="'$(OutDir)' != '' AND ('$(OutDirWasSpecified)' == '' AND '$(GenerateProjectSpecificOutputFolder)' == 'true')">$(OutDir)\$(MSBuildProjectName)</OutputPath>
+      <OutputPath Condition="'$(OutDir)' != '' AND ('$(OutDirWasSpecified)' != '' OR  '$(GenerateProjectSpecificOutputFolder)' != 'true')">$(OutDir)</OutputPath>
    </PropertyGroup>
    <!-- NuBuild Properties -->
    <PropertyGroup>
