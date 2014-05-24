@@ -51,6 +51,9 @@ namespace NuBuild.MSBuild
          "System.Data.DataSetExtensions", 
          "System.Xml", 
          "System.Xml.Linq",
+         "System.Net",
+         "System.Windows",
+         "mscorlib.extensions",
       };
 
       private static readonly List<string> vbDefaultReferences = new List<string> {

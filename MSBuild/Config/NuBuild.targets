@@ -2,19 +2,14 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
    <!-- NuBuild Tasks -->
    <Import Project="$(MSBuildThisFileDirectory)\NuBuild.tasks" />
-   <!-- MSBuild 4.5 Properties -->
-   <PropertyGroup>
-      <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">obj\</BaseIntermediateOutputPath>
-      <!-- old project files do not include MS.Common.targets, GenerateProjectSpecificOutputFolder has to be handled here only in that case (OutDirWasSpecified=='') -->
-      <OutputPath Condition="'$(OutDir)' != '' AND ('$(OutDirWasSpecified)' == '' AND '$(GenerateProjectSpecificOutputFolder)' == 'true')">$(OutDir)\$(MSBuildProjectName)</OutputPath>
-      <OutputPath Condition="'$(OutDir)' != '' AND ('$(OutDirWasSpecified)' != '' OR  '$(GenerateProjectSpecificOutputFolder)' != 'true')">$(OutDir)</OutputPath>
-   </PropertyGroup>
    <!-- NuBuild Properties -->
    <PropertyGroup>
-      <OutputPath Condition="'$(OutputPath)' != '' and !HasTrailingSlash('$(OutputPath)')">$(OutputPath)\</OutputPath>
-      <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-      <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-      <TargetFrameworkVersion Condition="'$(TargetFrameworkVersion)' == ''">v4.5</TargetFrameworkVersion>
+      <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">obj\</BaseIntermediateOutputPath>
+      <OutputPath Condition=" '$(OutputPath)'=='' ">bin\</OutputPath>
+      <OutDir Condition=" '$(OutDir)' == '' ">$(OutputPath)</OutDir>
+      <OutDir Condition=" '$(OutDir)' != '' AND !HasTrailingSlash('$(OutDir)') ">$(OutDir)\</OutDir>
+      <!-- old project files do not include MS.Common.targets, MSBuild 4.5 GenerateProjectSpecificOutputFolder has to be handled here only in that case (OutDirWasSpecified=='') -->
+      <OutDir Condition=" '$(OutDir)' != '' AND '$(OutDirWasSpecified)' == '' AND '$(GenerateProjectSpecificOutputFolder)' == 'true' ">$(OutDir)$(MSBuildProjectName)\</OutDir>
       <!-- Property: NuBuildVersionSource
          . specifies whether/how the package version string is generated
          . Manual:   manage in .nuspec file by hand
@@ -45,9 +40,10 @@
          . specifies whether to add executables to lib folder instead of tools folder
        -->
       <NuBuildAddExecutablesToLibFolder Condition="'$(NuBuildAddExecutablesToLibFolder)' == ''">false</NuBuildAddExecutablesToLibFolder>
-      <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-      <TargetFrameworkMoniker Condition="'$(TargetFrameworkMoniker)' == '' and '$(TargetFrameworkProfile)' != ''">$(TargetFrameworkIdentifier),Version=$(TargetFrameworkVersion),Profile=$(TargetFrameworkProfile)</TargetFrameworkMoniker>
-      <TargetFrameworkMoniker Condition="'$(TargetFrameworkMoniker)' == ''">$(TargetFrameworkIdentifier),Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
+      <TargetFrameworkIdentifier Condition="'$(TargetFrameworkIdentifier)' == '' ">.NETFramework</TargetFrameworkIdentifier>
+      <TargetFrameworkVersion Condition="'$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
+      <TargetFrameworkMoniker Condition="'$(TargetFrameworkMoniker)' == '' and '$(TargetFrameworkProfile)' != '' ">$(TargetFrameworkIdentifier),Version=$(TargetFrameworkVersion),Profile=$(TargetFrameworkProfile)</TargetFrameworkMoniker>
+      <TargetFrameworkMoniker Condition="'$(TargetFrameworkMoniker)' == '' ">$(TargetFrameworkIdentifier),Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
    </PropertyGroup>
    <!-- Target: GetCopyToOutputDirectoryItems 
       . determines additional files to output directory
@@ -58,8 +54,8 @@
          <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
       </AssignTargetPath>
       <ItemGroup>
-         <_SourceItemsToCopyToOutputDirectoryAlways KeepMetadata="CopyToOutputDirectory;TargetPath" Include="@(ContentWithTargetPath->'%(FullPath)')" Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='Always'"/>
-         <_SourceItemsToCopyToOutputDirectory       KeepMetadata="CopyToOutputDirectory;TargetPath" Include="@(ContentWithTargetPath->'%(FullPath)')" Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='PreserveNewest'"/>
+         <_SourceItemsToCopyToOutputDirectoryAlways Include="@(ContentWithTargetPath->'%(FullPath)')" Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='Always'"/>
+         <_SourceItemsToCopyToOutputDirectory       Include="@(ContentWithTargetPath->'%(FullPath)')" Condition="'%(ContentWithTargetPath.CopyToOutputDirectory)'=='PreserveNewest'"/>
       </ItemGroup>
       <ItemGroup>
          <CopyToOutputDirectoryItems                Include="@(_SourceItemsToCopyToOutputDirectoryAlways->'%(FullPath)');@(_SourceItemsToCopyToOutputDirectory->'%(FullPath)')"/>
@@ -80,7 +76,7 @@
                  VersionSource="$(NuBuildVersionSource)"
                  VersionFileName="$(NuBuildVersionFileName)"
                  IntermediateOutputPath="$(BaseIntermediateOutputPath)"
-                 OutputPath="$(OutputPath)"
+                 OutputPath="$(OutDir)"
                  BuildNumber="$(BuildNumber)"
                  ReferenceLibraries="@(__ReferenceLibraries)">
          <Output TaskParameter="Prepared" ItemName="NuPrepared"/>
@@ -91,7 +87,7 @@
          <NuSources Include="$(MSBuildProjectFile);"/>
       </ItemGroup>
       <ItemGroup>
-         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutputPath)%(TargetPath)');"/>
+         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutDir)%(TargetPath)');"/>
       </ItemGroup>
       <Message Text="NuSources: @(NuSources)"/>
       <Message Text="NuTargets: @(NuTargets)"/>
@@ -107,7 +103,7 @@
          <Output TaskParameter="Targets" ItemName="NuTargets"/>
       </NuPrepareClean>
       <ItemGroup>
-         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutputPath)%(TargetPath)');"/>
+         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutDir)%(TargetPath)');"/>
       </ItemGroup>
       <Message Text="NuTargets: @(NuTargets)"/>
    </Target>   
@@ -122,14 +118,24 @@
       . creates a .nupkg file for each .nuspec file in the project
    -->
    <Target Name="Build"
-           DependsOnTargets="__PrepareBuild;BeforeBuild"
+           DependsOnTargets="__PrepareBuild;BeforeBuild;CoreBuild;AfterBuild" >
+   </Target>
+   <Target Name="CoreBuild"
+           DependsOnTargets="PreBuildEvent;NuPackage;PostBuildEvent" >
+      <OnError ExecuteTargets="PostBuildEvent" Condition="'$(RunPostBuildEvent)'=='Always' or '$(RunPostBuildEvent)'=='OnOutputUpdated'"/>
+   </Target>
+   <Target Name="PreBuildEvent"
+           Condition="'$(PreBuildEvent)'!=''" >
+      <Exec WorkingDirectory="$(OutDir)" Command="$(PreBuildEvent)" />
+   </Target>
+   <Target Name="NuPackage"
            Inputs="@(NuSources)"
            Outputs="@(NuTargets)">
       <NuPackage ProjectPath="$(MSBuildProjectFullPath)"
                  TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
                  NuSpec="@(NuPrepared)"
                  Embedded="@(EmbeddedResource)"
-                 OutputPath="$(OutputPath)"
+                 OutputPath="$(OutDir)"
                  ReferenceProjects="@(ProjectReference)"
                  ReferenceLibraries="@(__ReferenceLibraries)"
                  AddBinariesToSubfolder="$(NuBuildAddBinariesToSubfolder)"
@@ -138,7 +144,10 @@
                  IncludePdbs="$(NuBuildIncludePdbs)"/>
       <Message Text="%(NuPrepared.Filename) -> %(NuPrepared.NuPackagePath)" Importance="high"/>
       <CallTarget Targets="__CopySourceItemsToOutputDirectory"/>
-      <CallTarget Targets="AfterBuild"/>
+   </Target>
+   <Target Name="PostBuildEvent"
+           Condition="'$(PostBuildEvent)' != '' and '$(RunPostBuildEvent)' != 'OnOutputUpdated'" >
+      <Exec WorkingDirectory="$(OutDir)" Command="$(PostBuildEvent)" />
    </Target>
    <!-- Target: Rebuild 
       . runs a clean and then a build
@@ -153,15 +162,15 @@
    <Target Name="__CopyOutOfDateSourceItemsToOutputDirectory"
            Condition=" '@(_SourceItemsToCopyToOutputDirectory)' != '' "
            Inputs="@(_SourceItemsToCopyToOutputDirectory)"
-           Outputs="@(_SourceItemsToCopyToOutputDirectory->'$(OutputPath)%(TargetPath)')">
+           Outputs="@(_SourceItemsToCopyToOutputDirectory->'$(OutDir)%(TargetPath)')">
       <Copy SourceFiles = "@(_SourceItemsToCopyToOutputDirectory)"
-            DestinationFiles = "@(_SourceItemsToCopyToOutputDirectory->'$(OutputPath)%(TargetPath)')"
+            DestinationFiles = "@(_SourceItemsToCopyToOutputDirectory->'$(OutDir)%(TargetPath)')"
             OverwriteReadOnlyFiles="true"/>
    </Target>
    <Target Name="__CopyOutOfDateSourceItemsToOutputDirectoryAlways"
            Condition=" '@(_SourceItemsToCopyToOutputDirectoryAlways)' != '' ">
       <Copy SourceFiles = "@(_SourceItemsToCopyToOutputDirectoryAlways)"
-            DestinationFiles = "@(_SourceItemsToCopyToOutputDirectoryAlways->'$(OutputPath)%(TargetPath)')"
+            DestinationFiles = "@(_SourceItemsToCopyToOutputDirectoryAlways->'$(OutDir)%(TargetPath)')"
             OverwriteReadOnlyFiles="true"/>
    </Target>
    <!-- Dummy targets required for Visual Studio -->

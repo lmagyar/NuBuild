@@ -87,7 +87,7 @@ namespace NuBuild.MSBuild
          }
          catch (Exception e)
          {
-            Log.LogError("{0} ({1})", e.Message, e.GetType().Name);
+            Log.LogError("{0} ({1})", e.ToString(), e.GetType().Name);
             return false;
          }
          return true;

@@ -1,6 +1,6 @@
 ﻿//===========================================================================
 // MODULE:  NuBuildPropertyPage.cs
-// PURPOSE: NuBuild project main property page
+// PURPOSE: NuBuild project property storage
 // 
 // Copyright © 2012
 // Brent M. Spell. All rights reserved.
@@ -86,17 +86,25 @@ namespace NuBuild.VS
       /// <param name="propertyValue">Value to set the property to.</param>
       public void SetPropertyValue(string propertyName, string propertyValue)
       {
-         // If the value is null, make it empty.
+         // Handle multiple properties
+         string[] propertyNames = propertyName.Split(',');
+         string[] propertyValues;
          if (propertyValue == null)
          {
-            propertyValue = String.Empty;
+            propertyValues = new string[propertyNames.Length];
+            for (int i = 0; i < propertyNames.Length; i++)
+               propertyValues[i] = string.Empty;
          }
+         else
+            propertyValues = propertyValue.Split(',');
 
          if (configs == null)
-            ErrorHandler.ThrowOnFailure(buildPropStorage.SetPropertyValue(propertyName, String.Empty, (uint)_PersistStorageType.PST_PROJECT_FILE, propertyValue));
+            for (int i = 0; i < propertyNames.Length; i++)
+               ErrorHandler.ThrowOnFailure(buildPropStorage.SetPropertyValue(propertyNames[i], String.Empty, (uint)_PersistStorageType.PST_PROJECT_FILE, propertyValues[i]));
          else
             foreach (string config in configs)
-               ErrorHandler.ThrowOnFailure(buildPropStorage.SetPropertyValue(propertyName, config, (uint)_PersistStorageType.PST_PROJECT_FILE, propertyValue));
+               for (int i = 0; i < propertyNames.Length; i++)
+                  ErrorHandler.ThrowOnFailure(buildPropStorage.SetPropertyValue(propertyNames[i], config, (uint)_PersistStorageType.PST_PROJECT_FILE, propertyValues[i]));
          if (StoreChanged != null)
          {
             StoreChanged();
@@ -110,29 +118,45 @@ namespace NuBuild.VS
       /// <returns></returns>
       public string GetPropertyValue(string propertyName)
       {
-         string value = null;
+         // Handle multiple properties
+         string[] propertyNames = propertyName.Split(',');
+         string[] propertyValues = new string[propertyNames.Length];
          bool initialized = false;
 
          if (configs == null)
-            buildPropStorage.GetPropertyValue(propertyName, String.Empty, (uint)_PersistStorageType.PST_PROJECT_FILE, out value);
+            for (int i = 0; i < propertyNames.Length; i++)
+               buildPropStorage.GetPropertyValue(propertyNames[i], String.Empty, (uint)_PersistStorageType.PST_PROJECT_FILE, out propertyValues[i]);
          else
          {
             foreach (string config in configs)
             {
-               string configValue = null;
-               buildPropStorage.GetPropertyValue(propertyName, configs[0], (uint)_PersistStorageType.PST_PROJECT_FILE, out configValue);
+               string[] configValues = new string[propertyNames.Length];
+               for (int i = 0; i < propertyNames.Length; i++)
+                  buildPropStorage.GetPropertyValue(propertyNames[i], config, (uint)_PersistStorageType.PST_PROJECT_FILE, out configValues[i]);
                if (!initialized)
-                  value = configValue;
-               else if (value != configValue)
                {
-                  // multiple config with different value for the property
-                  value = string.Empty;
-                  break;
+                  Array.Copy(configValues, propertyValues, propertyNames.Length);
+                  initialized = true;
+               }
+               else
+               {
+                  bool equals = true;
+                  for (int i = 0; i < propertyNames.Length; i++)
+                     if (!(equals = (propertyValues[i] != configValues[i])))
+                        break;
+
+                  if (!equals)
+                  {
+                     // multiple config with different value for the property
+                     for (int i = 0; i < propertyNames.Length; i++)
+                        propertyValues[i] = string.Empty;
+                     break;
+                  }
                }
             }
          }
 
-         return value;
+         return string.Join(",", propertyValues);
       }
 
       public void Dispose()

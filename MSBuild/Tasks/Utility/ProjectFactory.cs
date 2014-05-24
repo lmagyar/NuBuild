@@ -175,7 +175,7 @@ namespace NuBuild.MSBuild
             .Where(item =>
             {
                var identity = item.GetMetadataValue("Identity");
-               if (defaultReferences.Contains(identity))
+               if (defaultReferences.Any(reference => string.Compare(reference, identity, true) == 0))
                   return false;
                var copyLocal = item.GetMetadataValue("Private");
                if (string.IsNullOrEmpty(copyLocal))
