@@ -29,4 +29,6 @@
    </ItemGroup>
    <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
    <Import Project="$(MSBuildExtensionsPath32)\NuBuild\v1\NuBuild.targets" />
+   <!-- Dummy target required for Microsoft.Common.targets -->
+   <Target Name="CoreCompile"/>
 </Project>
