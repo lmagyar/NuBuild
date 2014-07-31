@@ -39,9 +39,9 @@
          this.chkIncludePdbs.AutoSize = true;
          this.chkIncludePdbs.Location = new System.Drawing.Point(9, 46);
          this.chkIncludePdbs.Name = "chkIncludePdbs";
-         this.chkIncludePdbs.Size = new System.Drawing.Size(107, 17);
+         this.chkIncludePdbs.Size = new System.Drawing.Size(167, 17);
          this.chkIncludePdbs.TabIndex = 3;
-         this.chkIncludePdbs.Text = "Include PDB files";
+         this.chkIncludePdbs.Text = "Include PDB and/or XML files";
          // 
          // lOutputPath
          // 

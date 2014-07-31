@@ -243,36 +243,31 @@ namespace NuBuild.MSBuild
                }
                catch { }
             // add the source library file to the package
-            builder.Files.Add(
-               new NuGet.PhysicalPackageFile()
-               {
-                  SourcePath = srcPath,
-                  TargetPath = String.Format(
-                     @"{0}\{1}",
-                     tgtFolder,
-                     Path.GetFileName(srcPath)
-                  )
-               }
-            );
-            // add PDBs if specified and exist
+            AddFile(builder, tgtFolder, srcPath);
+            // add PDB and/or XML if specified and exist
             if (hasPdb && this.IncludePdbs)
             {
-               var pdbPath = Path.ChangeExtension(srcPath, ".pdb");
-               if (File.Exists(pdbPath))
-                  builder.Files.Add(
-                     new NuGet.PhysicalPackageFile()
-                     {
-                        SourcePath = pdbPath,
-                        TargetPath = String.Format(
-                           @"{0}\{1}",
-                           tgtFolder,
-                           Path.GetFileName(pdbPath)
-                        )
-                     }
-                  );
+               AddFileOptionally(builder, tgtFolder, Path.ChangeExtension(srcPath, ".pdb"));
+               AddFileOptionally(builder, tgtFolder, Path.ChangeExtension(srcPath, ".xml"));
             }
          }
       }
+      private void AddFileOptionally(NuGet.PackageBuilder builder, String tgtFolder, String filePath)
+      {
+         if (File.Exists(filePath))
+            AddFile(builder, tgtFolder, filePath);
+      }
+      private void AddFile(NuGet.PackageBuilder builder, String tgtFolder, String filePath)
+      {
+         builder.Files.Add(
+            new NuGet.PhysicalPackageFile()
+            {
+               SourcePath = filePath,
+               TargetPath = Path.Combine(tgtFolder, Path.GetFileName(filePath))
+            }
+         );
+      }
+
       /// <summary>
       /// Adds embedded resources to the package tools/content section
       /// </summary>

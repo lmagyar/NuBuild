@@ -84,6 +84,16 @@ namespace NuBuild.MSBuild
                AppDomain.Unload(domain);
          }
       }
+
+      /// <summary>
+      /// Initializes a new reader instance
+      /// </summary>
+      public AssemblyReader ()
+      {
+         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler(
+            (object sender, ResolveEventArgs args) => System.Reflection.Assembly.ReflectionOnlyLoad(args.Name));
+      }
+
       /// <summary>
       /// Retrieves the properties of an assembly from within
       /// the assembly's AppDomain
@@ -96,8 +106,6 @@ namespace NuBuild.MSBuild
       /// </returns>
       private Properties ReadAssembly (String path)
       {
-         AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += new ResolveEventHandler(
-            (object sender, ResolveEventArgs args) => System.Reflection.Assembly.ReflectionOnlyLoad(args.Name));
          var asm = Assembly.ReflectionOnlyLoad(File.ReadAllBytes(path));
          // retrieve the assembly version
          var ver = asm.GetName().Version;
