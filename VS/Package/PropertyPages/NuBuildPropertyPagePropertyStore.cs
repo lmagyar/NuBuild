@@ -25,11 +25,16 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
 // Project References
 using CSVSXProjectSubType.PropertyPageBase;
+using System.Diagnostics;
+using System.Reflection;
+using NuGet;
 
 namespace NuBuild.VS
 {
    public class NuBuildPropertyPagePropertyStore : IPropertyStore
    {
+      private const string NuBuildToolVersionPropertyTag = "NuBuildToolVersion";
+
       private List<string> configs;
       private IVsBuildPropertyStorage buildPropStorage;
 
@@ -77,6 +82,18 @@ namespace NuBuild.VS
                configs.Add(config);
             }
          }
+
+         string assemblyInformationalVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+         SemanticVersion semanticAssemblyInformationalVersion = SemanticVersion.Parse(assemblyInformationalVersion);
+         SemanticVersion semanticToolVersionInProject;
+         bool semanticToolVersionInProjectSpecified = SemanticVersion.TryParse(GetPropertyValue(NuBuildToolVersionPropertyTag), out semanticToolVersionInProject);
+         if (!semanticToolVersionInProjectSpecified
+            || semanticToolVersionInProject < semanticAssemblyInformationalVersion)
+            SetPropertyValue(NuBuildToolVersionPropertyTag, assemblyInformationalVersion);
+         else if (semanticToolVersionInProjectSpecified
+            && semanticToolVersionInProject > semanticAssemblyInformationalVersion)
+            throw new InvalidOperationException(String.Format("The project properties are edited with a higher version NuBuild ({0}). Update the NuBuild project system from {1} to the latest version!",
+               semanticToolVersionInProject, assemblyInformationalVersion));
       }
 
       /// <summary>

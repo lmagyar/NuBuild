@@ -84,6 +84,10 @@ namespace NuBuild.MSBuild
       /// </summary>
       public ITaskItem[] ReferenceLibraries { get; set; }
       /// <summary>
+      /// Specifies the tool version that last edited the project properties 
+      /// </summary>
+      public String ToolVersion { get; set; }
+      /// <summary>
       /// Specifies whether to add binaries (.dll and .exe files) from referenced projects into subfolders
       /// (eg. lib\net40) based on TargetFrameworkVersion 
       /// </summary>
@@ -119,6 +123,16 @@ namespace NuBuild.MSBuild
          try
          {
             Debug.WriteLine("\n=== NuPackage on {0} ===", (object)Path.GetFileName(ProjectPath));
+
+            string assemblyInformationalVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            SemanticVersion semanticToolVersionInProject;
+            if (SemanticVersion.TryParse(ToolVersion, out semanticToolVersionInProject)
+               && semanticToolVersionInProject > SemanticVersion.Parse(assemblyInformationalVersion))
+            {
+               Log.LogError("The project properties are edited with a higher version NuBuild ({0}). Update the NuBuild project system from {1} to the latest version!",
+                  semanticToolVersionInProject, assemblyInformationalVersion);
+               return false;
+            }
 
             // prepare the task for execution
             if (this.ReferenceProjects == null)

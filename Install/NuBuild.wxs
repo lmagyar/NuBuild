@@ -136,6 +136,9 @@
                <File Id="VS2010_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
             </Component>
             -->
+            <Component Id="VS2010_NuBuild_NuGet_Core_dll" Guid="{157C8D7B-2845-4EBC-AA6F-83BF442E1360}" Directory="VS2010ExtNuBuildV2Folder">
+               <File Id="VS2010_NuBuild_NuGet_Core_dll" Source="..\Bin\NuGet.Core.dll"/>
+            </Component>
             <Component Id="VS2010_NuBuild_Package_dll" Guid="{17BE743E-952C-4B7F-9D95-ED401EB007E3}" Directory="VS2010ExtNuBuildV2Folder">
                <File Id="VS2010_NuBuild_Package_dll" Source="..\Bin\VS\NuBuild.VS.Package.dll"/>
             </Component>
@@ -190,6 +193,9 @@
                <File Id="VS2012_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
             </Component>
             -->
+            <Component Id="VS2012_NuBuild_NuGet_Core_dll" Guid="{700DB295-DF7C-4365-9B4D-B9D337B85C8B}" Directory="VS2012ExtNuBuildV2Folder">
+               <File Id="VS2012_NuBuild_NuGet_Core_dll" Source="..\Bin\NuGet.Core.dll"/>
+            </Component>
             <Component Id="VS2012_NuBuild_Package_dll" Guid="{006577D1-8091-4E41-A369-0ABDDCB9CDB2}" Directory="VS2012ExtNuBuildV2Folder">
                <File Id="VS2012_NuBuild_Package_dll" Source="..\Bin\VS\NuBuild.VS.Package.dll"/>
             </Component>
@@ -244,6 +250,9 @@
                <File Id="VS2013_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
             </Component>
             -->
+            <Component Id="VS2013_NuBuild_NuGet_Core_dll" Guid="{B63C4C32-75D7-4065-9F3F-E28027854DA0}" Directory="VS2013ExtNuBuildV2Folder">
+               <File Id="VS2013_NuBuild_NuGet_Core_dll" Source="..\Bin\NuGet.Core.dll"/>
+            </Component>
             <Component Id="VS2013_NuBuild_Package_dll" Guid="{77654179-ea63-4270-8e48-c75d6988e029}" Directory="VS2013ExtNuBuildV2Folder">
                <File Id="VS2013_NuBuild_Package_dll" Source="..\Bin\VS\NuBuild.VS.Package.dll"/>
             </Component>
