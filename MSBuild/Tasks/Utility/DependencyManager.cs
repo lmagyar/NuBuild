@@ -35,10 +35,23 @@ using Microsoft.Build.Framework;
 
 namespace NuBuild.MSBuild
 {
+   public static class SemanticVersionExtensions
+   {
+      public static SemanticVersion GetLimitingMajor(this SemanticVersion semanticVersion)
+      {
+         // do not modify the test below, due to SemanticVersion.NormalizeVersionValue() in SemanticVersion ctor
+         if (semanticVersion.ToString().Count(c => c == '.') > 2)
+            return new SemanticVersion(semanticVersion.Version.Major + 1, 0, 0, 0);
+         else
+            return new SemanticVersion(semanticVersion.Version.Major + 1, 0, 0, null);
+      }
+   }
+
    public class DependencyManager
    {
       protected String targetFrameworkMoniker;
       protected Boolean addBinariesToSubfolder;
+      protected Boolean limitMajorVersionOfDependencies;
       protected TaskLoggingHelper log;
 
       protected HashSet<ProjectFactory> referenceProjectFactories;
@@ -50,10 +63,11 @@ namespace NuBuild.MSBuild
       protected Collection<FrameworkAssemblyReference> frameworkReferences;
       protected Collection<PackageDependencySet> dependencySets;
 
-      public DependencyManager(String targetFrameworkMoniker, Boolean addBinariesToSubfolder, TaskLoggingHelper log)
+      public DependencyManager(String targetFrameworkMoniker, Boolean addBinariesToSubfolder, Boolean limitMajorVersionOfDependencies, TaskLoggingHelper log)
       {
          this.targetFrameworkMoniker = targetFrameworkMoniker;
          this.addBinariesToSubfolder = addBinariesToSubfolder;
+         this.limitMajorVersionOfDependencies = limitMajorVersionOfDependencies;
          this.log = log;
       }
 
@@ -144,6 +158,7 @@ namespace NuBuild.MSBuild
                {
                   IsMinInclusive = true,
                   MinVersion = package.Version,
+                  MaxVersion = limitMajorVersionOfDependencies ? package.Version.GetLimitingMajor() : null,
                });
                foreach (var targetFramework in targetFrameworks)
                {
@@ -194,6 +209,13 @@ namespace NuBuild.MSBuild
                if (dependencies.ContainsKey(package.Id))
                   continue;
                var dependency = packagesAndDependencies[package.Id].Item2;
+               if (dependency.VersionSpec.MaxVersion == null && limitMajorVersionOfDependencies)
+                  dependency = new PackageDependency(dependency.Id, new VersionSpec()
+                     {
+                        IsMinInclusive = dependency.VersionSpec.IsMinInclusive,
+                        MinVersion = dependency.VersionSpec.MinVersion,
+                        MaxVersion = dependency.VersionSpec.MinVersion.GetLimitingMajor()
+                     });
                dependencies[dependency.Id] = dependency;
             }
 
