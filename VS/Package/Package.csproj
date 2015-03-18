@@ -222,6 +222,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <EmbeddedResource Include="Resources\NuSpec.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="source.extension.vsixmanifest" />
     <EmbeddedResource Include="..\ItemTemplate\NuSpec\NuSpec.ico">
       <Link>Resources\NuSpec.ico</Link>
