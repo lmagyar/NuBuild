@@ -14,6 +14,8 @@
          Compressed="yes"
          InstallPrivileges="elevated"/>
       <MediaTemplate EmbedCab="yes"/>
+      <Icon Id="NuBuild.ico" SourceFile="..\Bin\VS\Resources\NuBuild.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="NuBuild.ico" />
       <Directory Id="TARGETDIR" Name="SourceDir">
          <!-- MSBuild Directories -->
          <Directory Id="ProgramFilesFolder" Name="ProgFile">
@@ -43,6 +45,7 @@
                </Directory>
             </Directory>
          </Directory>
+         <Directory Id="VS2010XmlSchemasFolder" Name="VS2010Schemas"/>
          <!-- VS 2012 Extension Directories -->
          <Directory Id="VS2012Folder" Name="VS2012">
             <Directory Id="VS2012ExtFolder" Name="Extensions">
@@ -63,6 +66,7 @@
                </Directory>
             </Directory>
          </Directory>
+         <Directory Id="VS2012XmlSchemasFolder" Name="VS2012Schemas"/>
          <!-- VS 2013 Extension Directories -->
          <Directory Id="VS2013Folder" Name="VS2013">
             <Directory Id="VS2013ExtFolder" Name="Extensions">
@@ -83,6 +87,7 @@
                </Directory>
             </Directory>
          </Directory>
+         <Directory Id="VS2013XmlSchemasFolder" Name="VS2013Schemas"/>
       </Directory>
       <Feature Id="All" 
          Title="NuBuild Project System" 
@@ -163,6 +168,9 @@
             <Component Id="VS2010_NuSpec_zip" Guid="{D9F65F99-BEF7-4297-99A1-F2D7CA0BBB49}" Directory="VS2010ExtNuBuildV2ItemTemplatesFolder">
                <File Id="VS2010_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
             </Component>
+            <Component Id="VS2010_NuSpec_xsd" Guid="{6D1169C0-9EB2-4393-8604-E64AE7B8C122}" Directory="VS2010XmlSchemasFolder">
+               <File Id="VS2010_NuSpec_xsd" Source="..\Bin\VS\Resources\NuSpec.xsd"/>
+            </Component>
          </Feature>
          <!-- VS2012 Extension Files -->
          <Feature Id="VS2012" Level="1">
@@ -219,6 +227,9 @@
             </Component>
             <Component Id="VS2012_NuSpec_zip" Guid="{E25C5DDC-36CC-4B19-A3CD-2C92CEC63B78}" Directory="VS2012ExtNuBuildV2ItemTemplatesFolder">
                <File Id="VS2012_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
+            </Component>
+            <Component Id="VS2012_NuSpec_xsd" Guid="{928BD2CE-DA5D-4391-AF86-09EED0FE8D9B}" Directory="VS2012XmlSchemasFolder">
+               <File Id="VS2012_NuSpec_xsd" Source="..\Bin\VS\Resources\NuSpec.xsd"/>
             </Component>
          </Feature>
          <!-- VS2013 Extension Files -->
@@ -277,6 +288,9 @@
             <Component Id="VS2013_NuSpec_zip" Guid="{c393cb41-a4bd-4816-89ff-227fdd27c344}" Directory="VS2013ExtNuBuildV2ItemTemplatesFolder">
                <File Id="VS2013_NuSpec_zip" Source="..\Bin\VS\ItemTemplates\NuSpec.zip"/>
             </Component>
+            <Component Id="VS2013_NuSpec_xsd" Guid="{3D046F8E-F89F-40BC-AC48-B0CB03354C47}" Directory="VS2013XmlSchemasFolder">
+               <File Id="VS2013_NuSpec_xsd" Source="..\Bin\VS\Resources\NuSpec.xsd"/>
+            </Component>
          </Feature>
          <!-- .nuproj Extension Registry -->
          <!--<Component Id="NuBuild_Reg_nuproj" Guid="*" Directory="MSBuildNuBuildV1Folder">
@@ -313,10 +327,15 @@
             Name="InstallDir" 
             Type="directory" />
       </Property>
+      <PropertyRef Id="VS2010_SCHEMAS_DIR"/>
       <CustomAction
          Id="SetVS2010Folder"
          Directory="VS2010Folder"
          Value="[VS2010INSTALLDIR]" />
+      <CustomAction
+         Id="SetVS2010XmlSchemasFolder"
+         Directory="VS2010XmlSchemasFolder"
+         Value="[VS2010_SCHEMAS_DIR]" />
       <CustomAction Id="ExecuteVS2010Setup"
          Directory="VS2010Folder"
          Return="asyncWait"
@@ -332,10 +351,15 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
+      <PropertyRef Id="VS2012_SCHEMAS_DIR"/>
       <CustomAction
          Id="SetVS2012Folder"
          Directory="VS2012Folder"
          Value="[VS2012INSTALLDIR]" />
+      <CustomAction
+         Id="SetVS2012XmlSchemasFolder"
+         Directory="VS2012XmlSchemasFolder"
+         Value="[VS2012_SCHEMAS_DIR]" />
       <CustomAction Id="ExecuteVS2012Setup"
          Directory="VS2012Folder"
          Return="asyncWait"
@@ -351,10 +375,15 @@
             Name="InstallDir" 
             Type="directory" />
       </Property>
+      <PropertyRef Id="VS2013_SCHEMAS_DIR"/>
       <CustomAction
          Id="SetVS2013Folder"
          Directory="VS2013Folder"
          Value="[VS2013INSTALLDIR]" />
+      <CustomAction
+         Id="SetVS2013XmlSchemasFolder"
+         Directory="VS2013XmlSchemasFolder"
+         Value="[VS2013_SCHEMAS_DIR]" />
       <CustomAction Id="ExecuteVS2013Setup"
          Directory="VS2013Folder"
          Return="asyncWait"
@@ -364,10 +393,13 @@
       <!-- Installation Ordering -->
       <InstallExecuteSequence>
          <Custom Action="SetVS2010Folder" After="CostFinalize">VS2010INSTALLDIR</Custom>
+         <Custom Action="SetVS2010XmlSchemasFolder" After="CostFinalize">VS2010INSTALLDIR</Custom>
          <Custom Action="ExecuteVS2010Setup" Before="InstallFinalize">NOT REMOVE AND VS2010INSTALLDIR</Custom>
          <Custom Action="SetVS2012Folder" After="CostFinalize">VS2012INSTALLDIR</Custom>
+         <Custom Action="SetVS2012XmlSchemasFolder" After="CostFinalize">VS2012INSTALLDIR</Custom>
          <Custom Action="ExecuteVS2012Setup" Before="InstallFinalize">NOT REMOVE AND VS2012INSTALLDIR</Custom>
          <Custom Action="SetVS2013Folder" After="CostFinalize">VS2013INSTALLDIR</Custom>
+         <Custom Action="SetVS2013XmlSchemasFolder" After="CostFinalize">VS2013INSTALLDIR</Custom>
          <Custom Action="ExecuteVS2013Setup" Before="InstallFinalize">NOT REMOVE AND VS2013INSTALLDIR</Custom>
       </InstallExecuteSequence>
    </Product>

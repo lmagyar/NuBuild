@@ -217,14 +217,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\..\NuBuild.ico">
+      <Link>Resources\NuBuild.ico</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\..\NuBuild.png">
       <Link>Resources\NuBuild.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <EmbeddedResource Include="Resources\NuSpec.xsd">
+    <Content Include="Resources\NuSpec.xsd">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest" />
     <EmbeddedResource Include="..\ItemTemplate\NuSpec\NuSpec.ico">
       <Link>Resources\NuSpec.ico</Link>
