@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
-   <?define ProductVersion = "2.4.0" ?>
+   <?define ProductVersion = "2.4.1" ?>
    <?define ProductName="NuBuild Project System" ?>
    <?define ProductManufacturer="NuBuild" ?>
    <?define ProductDescription="NuGet build framework and project templates" ?>
