@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Fragment Id="VS2013_Extensions">
+      <PropertyRef Id="VS2013_INSTALL_DIR"/>
+      <DirectoryRef Id="TARGETDIR">
+         <!-- we need the TARGETDIR root, but immediately redirect to VS2013_INSTALL_DIR -->
+         <Directory Id="VS2013_INSTALL_DIR" Name="[VS2013_INSTALL_DIR]">
+            <Directory Id="VS2013ExtFolder" Name="Extensions">
+               <Directory Id="VS2013ExtNuBuildFolder" Name="NuBuild">
+                  <!-- just to be similar to MSBuild v1 folder structure -->
+                  <!-- because we are not in ProgramFilesFolder, must specify a real guid instead of "*" -->
+                  <Directory Id="VS2013ExtNuBuildV2Folder" Name="v2">
+                     <Component Id="VS2013_Microsoft_Web_XmlTransform_dll" Guid="3918A9D4-6803-4F50-8A0E-0C3A62CA1186">
+                        <File Id="VS2013_Microsoft_Web_XmlTransform_dll" Source="..\Bin\VSIX\Microsoft.Web.XmlTransform.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2013_NuGet_Core_dll" Guid="B63C4C32-75D7-4065-9F3F-E28027854DA0">
+                        <File Id="VS2013_NuGet_Core_dll" Source="..\Bin\VSIX\NuGet.Core.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2013_NuBuild_Core_dll" Guid="790689FD-70F9-4542-AFF7-DAA0867F3832">
+                        <File Id="VS2013_NuBuild_Core_dll" Source="..\Bin\VSIX\NuBuild.Core.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2013_NuBuild_VS_Package_dll" Guid="30505EA7-C512-40D6-9547-6AD25C8EE102">
+                        <File Id="VS2013_NuBuild_VS_Package_dll" Source="..\Bin\VSIX\NuBuild.VS.Package.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2013_NuBuild_VS_Package_pkgdef" Guid="960FC9D8-79CE-4452-8997-F93023971094">
+                        <File Id="VS2013_NuBuild_VS_Package_pkgdef" Source="..\Bin\VSIX\NuBuild.VS.Package.pkgdef" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2013_Extension_vsixmanifest" Guid="8F57693D-37A6-4209-9990-F749CAE3EEC4">
+                        <File Id="VS2013_Extension_vsixmanifest" Source="..\Bin\VSIX\extension.vsixmanifest" KeyPath="yes"/>
+                     </Component>
+                     <Directory Id="VS2013ExtNuBuildV2ResourcesFolder" Name="Resources">
+                        <Component Id="VS2013_license_txt" Guid="45BAC244-02D0-4F2D-8A22-0991EBA1C858">
+                           <File Id="VS2013_license_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
+                        </Component>
+                        <Component Id="VS2013_NuBuild_png" Guid="DE65A5B6-378D-415B-B7B6-434F8D7A2E43">
+                           <File Id="VS2013_NuBuild_png" Source="..\Bin\VSIX\Resources\NuBuild.png" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                     <Directory Id="VS2013ExtNuBuildV2ProjectTemplatesFolder" Name="ProjectTemplates">
+                        <Component Id="VS2013_NuProj_zip" Guid="3DEA7F2D-4D3A-437D-8F63-B2223E1DD2ED">
+                           <File Id="VS2013_NuProj_zip" Source="..\Bin\VSIX\ProjectTemplates\NuProj.zip" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                     <Directory Id="VS2013ExtNuBuildV2ItemTemplatesFolder" Name="ItemTemplates">
+                        <Component Id="VS2013_NuSpec_zip" Guid="AF00E8F2-AE0A-4157-ABE6-79ECE31ED3AA">
+                           <File Id="VS2013_NuSpec_zip" Source="..\Bin\VSIX\ItemTemplates\NuSpec.zip" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                  </Directory>
+               </Directory>
+            </Directory>
+         </Directory>
+      </DirectoryRef>
+      <!-- group the components -->
+      <ComponentGroup Id="VS2013_Extensions">
+         <ComponentRef Id="VS2013_Microsoft_Web_XmlTransform_dll"/>
+         <ComponentRef Id="VS2013_NuGet_Core_dll"/>
+         <ComponentRef Id="VS2013_NuBuild_Core_dll"/>
+         <ComponentRef Id="VS2013_NuBuild_VS_Package_dll"/>
+         <ComponentRef Id="VS2013_NuBuild_VS_Package_pkgdef"/>
+         <ComponentRef Id="VS2013_Extension_vsixmanifest"/>
+         <ComponentRef Id="VS2013_license_txt"/>
+         <ComponentRef Id="VS2013_NuBuild_png"/>
+         <ComponentRef Id="VS2013_NuProj_zip"/>
+         <ComponentRef Id="VS2013_NuSpec_zip"/>
+      </ComponentGroup>
+      <!-- reference this feature from Product -->
+      <Feature Id="VS2013_Extensions" Level="1"
+               Title="VS 2013 Extensions and Project Templates"
+               Description="Integrates NuBuild extensions and project templates into Visual Studio 2013.">
+         <!-- turn it off, if there is no VS2013_INSTALL_DIR specified -->
+         <Condition Level="0">NOT VS2013_INSTALL_DIR</Condition>
+         <ComponentGroupRef Id="VS2013_Extensions" />
+      </Feature>
+      <!-- VS2013_INSTALL_DIR is not a predefined value like VS2013_SCHEMAS_DIR -->
+      <Property Id="VS2013_INSTALL_DIR">
+         <RegistrySearch
+            Id="VS2013InstallRegistry"
+            Root="HKLM"
+            Key="SOFTWARE\Microsoft\VisualStudio\12.0"
+            Name="InstallDir"
+            Type="directory" />
+      </Property>
+      <!-- after installation, instead of /setup use the undocumented /updateconfiguration
+           this is faster, only touches the extensions.configurationchanged file in the Extensions folder -->
+      <CustomAction Id="ExecuteVS2013Updateconfiguration"
+         Directory="VS2013_INSTALL_DIR"
+         Return="asyncWait"
+         Execute="deferred"
+         Impersonate="no"
+         ExeCommand="[VS2013_INSTALL_DIR]devenv.exe /updateconfiguration"/>
+      <InstallExecuteSequence>
+         <Custom Action="ExecuteVS2013Updateconfiguration" Before="InstallFinalize">VS2013_INSTALL_DIR</Custom>
+      </InstallExecuteSequence>
+   </Fragment>
+</Wix>

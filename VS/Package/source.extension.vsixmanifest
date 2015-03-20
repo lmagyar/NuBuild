@@ -1,33 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+<Vsix Version="1.0.0"
+      xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
    <Identifier Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64">
+      <Version>2.4.0</Version>
       <Name>NuBuild Project System</Name>
       <Author>NuBuild</Author>
-      <Version>2.4.0</Version>
-      <Description xml:space="preserve">A NuGet project system for Visual Studio</Description>
+      <Description xml:space="preserve">NuGet build framework and project templates</Description>
       <Locale>1033</Locale>
       <MoreInfoUrl>http://github.com/bspell1/nubuild</MoreInfoUrl>
       <License>Resources\license.txt</License>
       <Icon>Resources\NuBuild.png</Icon>
       <InstalledByMsi>true</InstalledByMsi>
+      <AllUsers>true</AllUsers>
       <SupportedProducts>
          <VisualStudio Version="10.0">
-            <Edition>Ultimate</Edition>
-            <Edition>Premium</Edition>
             <Edition>Pro</Edition>
             <Edition>Express_All</Edition>
+            <Edition>IntegratedShell</Edition>
          </VisualStudio>
          <VisualStudio Version="11.0">
-            <Edition>Ultimate</Edition>
-            <Edition>Premium</Edition>
             <Edition>Pro</Edition>
             <Edition>Express_All</Edition>
+            <Edition>IntegratedShell</Edition>
          </VisualStudio>
          <VisualStudio Version="12.0">
-            <Edition>Ultimate</Edition>
-            <Edition>Premium</Edition>
             <Edition>Pro</Edition>
             <Edition>Express_All</Edition>
+            <Edition>IntegratedShell</Edition>
          </VisualStudio>
       </SupportedProducts>
       <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.5.2" />
@@ -38,3 +37,38 @@
       <ItemTemplate>ItemTemplates</ItemTemplate>
    </Content>
 </Vsix>
+<!-- for later use... -->
+<!--<PackageManifest Version="2.0.0"
+      xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011"
+      xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+   <Metadata>
+      <Identity Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64"
+         Version="2.4.0"
+         Publisher="NuBuild"
+         Language="en-US" />
+      <DisplayName>NuBuild Project System</DisplayName>
+      <Description>NuGet build framework and project templates</Description>
+      <MoreInfo>http://github.com/bspell1/nubuild</MoreInfo>
+      <License>Resources\license.txt</License>
+      <Icon>Resources\NuBuild.png</Icon>
+   </Metadata>
+   <Installation InstalledByMsi="true" AllUsers="true">
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.Pro" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.VSWinExpress" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.VSWinDesktopExpress" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.IntegratedShell" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.VWDExpress" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.VPDExpress" />
+      <InstallationTarget Version="[10.0,12.0]" Id="Microsoft.VisualStudio.VSLS" />
+   </Installation>
+   <Dependencies>
+      <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.0,)" />
+      -->
+   <!--<Dependency Id="Microsoft.VisualStudio.MPF.10.0" DisplayName="Visual Studio MPF 10.0" d:Source="Installed" Version="[10.0,12.0]" />--><!--
+   </Dependencies>
+   <Assets>
+      <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+      <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="ItemTemplate" d:TargetPath="|ItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+      <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="ProjectTemplate" d:TargetPath="|ProjectTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+   </Assets>
+</PackageManifest>-->

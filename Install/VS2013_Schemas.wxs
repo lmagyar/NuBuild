@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Fragment Id="VS2013_Schemas">
+      <PropertyRef Id="VS2013_SCHEMAS_DIR"/>
+      <DirectoryRef Id="TARGETDIR">
+         <!-- we need the TARGETDIR root, but immediately redirect to VS2013_SCHEMAS_DIR -->
+         <Directory Id="VS2013_SCHEMAS_DIR" Name="[VS2013_SCHEMAS_DIR]">
+            <!-- because we are not in ProgramFilesFolder, must specify a real guid instead of "*" -->
+            <Component Id="VS2013_NuSpec_xsd" Guid="87D4A0CC-4B7F-4422-BD41-F41F9B0A3E9C">
+               <File Id="VS2013_NuSpec_xsd" Source="..\VS\Config\NuSpec.xsd" KeyPath="yes"/>
+            </Component>
+         </Directory>
+      </DirectoryRef>
+      <!-- group the components, in case there will be multiple components in the future -->
+      <ComponentGroup Id="VS2013_Schemas">
+         <ComponentRef Id="VS2013_NuSpec_xsd"/>
+      </ComponentGroup>
+      <!-- reference this feature from Product -->
+      <Feature Id="VS2013_Schemas" Level="1"
+               Title="VS 2013 IntelliSense Support"
+               Description="Integrates NuBuild schema files into Visual Studio 2013 IntelliSense.">
+         <!-- turn it off, if there is no VS2013_SCHEMAS_DIR specified -->
+         <Condition Level="0">NOT VS2013_SCHEMAS_DIR</Condition>
+         <ComponentGroupRef Id="VS2013_Schemas"/>
+      </Feature>
+   </Fragment>
+</Wix>
