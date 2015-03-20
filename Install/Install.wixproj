@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Variables.wxi" />
+    <None Include="VSIX_ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" />
 </Project>
