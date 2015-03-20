@@ -17,6 +17,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Fragments\VS14_Extensions.wxs" />
+    <Compile Include="Fragments\VS14_Schemas.wxs" />
     <Compile Include="Fragments\MSBuild_Binaries.wxs" />
     <Compile Include="Fragments\VS2010_Extensions.wxs" />
     <Compile Include="Fragments\VS2010_Schemas.wxs" />

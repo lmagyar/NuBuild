@@ -28,8 +28,13 @@
             <Edition>Express_All</Edition>
             <Edition>IntegratedShell</Edition>
          </VisualStudio>
+         <VisualStudio Version="14.0">
+            <Edition>Pro</Edition>
+            <Edition>Express_All</Edition>
+            <Edition>IntegratedShell</Edition>
+         </VisualStudio>
       </SupportedProducts>
-      <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.5.2" />
+      <SupportedFrameworkRuntimeEdition MinVersion="4.0" />
    </Identifier>
    <Content>
       <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>

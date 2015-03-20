@@ -33,13 +33,16 @@
       <FeatureRef Id="VS2010_Extensions"/>
       <FeatureRef Id="VS2012_Extensions"/>
       <FeatureRef Id="VS2013_Extensions"/>
+      <FeatureRef Id="VS14_Extensions"/>
       <FeatureRef Id="MSBuild_Binaries"/>
       <FeatureRef Id="VS2010_Schemas"/>
       <FeatureRef Id="VS2012_Schemas"/>
       <FeatureRef Id="VS2013_Schemas"/>
+      <FeatureRef Id="VS14_Schemas"/>
 
       <!-- confirmation message at the end -->
       <CustomAction Id="ConfirmationMessage" Script="vbscript">
+         <!-- vbInformation = 64 -->
          <![CDATA[MsgBox "Successfully installed!", 64, "$(var.ProductName)"]]>
       </CustomAction>      
       <InstallUISequence>
