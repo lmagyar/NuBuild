@@ -77,18 +77,16 @@
          <RegistrySearch
             Id="VS2010InstallRegistry"
             Root="HKLM"
-            Key="SOFTWARE\Microsoft\VisualStudio\12.0"
+            Key="SOFTWARE\Microsoft\VisualStudio\10.0"
             Name="InstallDir"
             Type="directory" />
       </Property>
-      <!-- after installation, instead of /setup use the undocumented /updateconfiguration
-           this is faster, only touches the extensions.configurationchanged file in the Extensions folder -->
       <CustomAction Id="ExecuteVS2010Updateconfiguration"
          Directory="VS2010_INSTALL_DIR"
          Return="asyncWait"
          Execute="deferred"
          Impersonate="no"
-         ExeCommand="[VS2010_INSTALL_DIR]devenv.exe /updateconfiguration"/>
+         ExeCommand="[VS2010_INSTALL_DIR]devenv.exe /setup"/>
       <InstallExecuteSequence>
          <Custom Action="ExecuteVS2010Updateconfiguration" Before="InstallFinalize">VS2010_INSTALL_DIR</Custom>
       </InstallExecuteSequence>
