@@ -17,14 +17,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MSBuild_Binaries.wxs" />
+    <Compile Include="Fragments\MSBuild_Binaries.wxs" />
+    <Compile Include="Fragments\VS2010_Extensions.wxs" />
+    <Compile Include="Fragments\VS2010_Schemas.wxs" />
+    <Compile Include="Fragments\VS2012_Extensions.wxs" />
+    <Compile Include="Fragments\VS2012_Schemas.wxs" />
+    <Compile Include="Fragments\VS2013_Extensions.wxs" />
+    <Compile Include="Fragments\VS2013_Schemas.wxs" />
     <Compile Include="NuBuild.wxs" />
-    <Compile Include="VS2010_Extensions.wxs" />
-    <Compile Include="VS2010_Schemas.wxs" />
-    <Compile Include="VS2012_Extensions.wxs" />
-    <Compile Include="VS2012_Schemas.wxs" />
-    <Compile Include="VS2013_Extensions.wxs" />
-    <Compile Include="VS2013_Schemas.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixVSExtension">
@@ -35,6 +35,9 @@
   <ItemGroup>
     <Content Include="Variables.wxi" />
     <None Include="VSIX_ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fragments" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" />
 </Project>
