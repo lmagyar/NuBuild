@@ -40,14 +40,10 @@
       <FeatureRef Id="VS2013_Schemas"/>
       <FeatureRef Id="VS14_Schemas"/>
 
-      <!-- confirmation message at the end -->
-      <CustomAction Id="ConfirmationMessage" Script="vbscript">
-         <!-- vbInformation = 64 -->
-         <![CDATA[MsgBox "Successfully installed!", 64, "$(var.ProductName)"]]>
-      </CustomAction>      
-      <InstallUISequence>
-         <Custom Action="ConfirmationMessage" OnExit="success" />
-      </InstallUISequence>
+      <!-- default dialogs to be able to select components -->
+      <WixVariable Id="WixUIBannerBmp" Value="..\NuBuild.bmp" />
+      <WixVariable Id="WixUILicenseRtf" Value="..\license.rtf" />
+      <UIRef Id="WixUI_FeatureTree" />
    </Product>
    
    <!-- from v1.x, to be used later in a dual version -->

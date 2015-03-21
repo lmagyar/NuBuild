@@ -65,7 +65,8 @@
       <!-- reference this feature from Product -->
       <Feature Id="VS2012_Extensions" Level="1"
                Title="VS 2012 Extensions and Project Templates"
-               Description="Integrates NuBuild extensions and project templates into Visual Studio 2012.">
+               Description="Integrates NuBuild extensions and project templates into Visual Studio 2012."
+               AllowAdvertise="no" >
          <!-- turn it off, if there is no VS2012_INSTALL_DIR specified -->
          <Condition Level="0">NOT VS2012_INSTALL_DIR</Condition>
          <ComponentGroupRef Id="VS2012_Extensions" />
@@ -79,6 +80,7 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
+      <!-- Execute action at the en of the installation -->
       <!-- after installation, instead of /setup use the undocumented /updateconfiguration
            this is faster, only touches the extensions.configurationchanged file in the Extensions folder -->
       <CustomAction Id="ExecuteVS2012Updateconfiguration"
@@ -88,7 +90,10 @@
          Impersonate="no"
          ExeCommand="[VS2012DEVENV] /updateconfiguration"/>
       <InstallExecuteSequence>
-         <Custom Action="ExecuteVS2012Updateconfiguration" Before="InstallFinalize">VS2012_INSTALL_DIR</Custom>
+         <Custom Action="ExecuteVS2012Updateconfiguration" Before="InstallFinalize">
+            <!-- Run action only if the feature will be installed locally. Do not run action on a reinstallation. -->
+            <![CDATA[VS2012_INSTALL_DIR AND (&VS2012_Extensions = 3) AND NOT (!VS2012_Extensions = 3)]]>
+         </Custom>
       </InstallExecuteSequence>
    </Fragment>
 </Wix>

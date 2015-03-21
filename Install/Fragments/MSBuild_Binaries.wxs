@@ -44,7 +44,8 @@
       <!-- reference this feature from Product -->
       <Feature Id="MSBuild_Binaries" Level="1"
                Title="MSBuild Support"
-               Description="Integrates NuBuild build framework into MSBuild.">
+               Description="Integrates NuBuild build framework into MSBuild."
+               Absent="disallow" AllowAdvertise="no" >
          <ComponentGroupRef Id="MSBuild_Binaries"/>
       </Feature>
    </Fragment>

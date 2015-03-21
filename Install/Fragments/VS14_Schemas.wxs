@@ -18,7 +18,8 @@
       <!-- reference this feature from Product -->
       <Feature Id="VS14_Schemas" Level="1"
                Title="VS 2015 IntelliSense Support"
-               Description="Integrates NuBuild schema files into Visual Studio 2015 IntelliSense.">
+               Description="Integrates NuBuild schema files into Visual Studio 2015 IntelliSense."
+               AllowAdvertise="no" >
          <!-- turn it off, if there is no VS14_SCHEMAS_DIR specified -->
          <Condition Level="0">NOT VS14_SCHEMAS_DIR</Condition>
          <ComponentGroupRef Id="VS14_Schemas"/>

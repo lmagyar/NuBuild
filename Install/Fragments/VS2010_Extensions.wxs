@@ -4,6 +4,7 @@
       <PropertyRef Id="VS2010_INSTALL_DIR"/>
       <DirectoryRef Id="TARGETDIR">
          <!-- we need the TARGETDIR root, but immediately redirect to VS2010_INSTALL_DIR -->
+         <!-- under VS 2010 there is no VS2010_EXTENSIONS_DIR property -->
          <Directory Id="VS2010_INSTALL_DIR" Name="[VS2010_INSTALL_DIR]">
             <Directory Id="VS2010ExtFolder" Name="Extensions">
                <Directory Id="VS2010ExtNuBuildFolder" Name="NuBuild">
@@ -67,7 +68,8 @@
       <!-- reference this feature from Product -->
       <Feature Id="VS2010_Extensions" Level="1"
                Title="VS 2010 Extensions and Project Templates"
-               Description="Integrates NuBuild extensions and project templates into Visual Studio 2010.">
+               Description="Integrates NuBuild extensions and project templates into Visual Studio 2010."
+               AllowAdvertise="no" >
          <!-- turn it off, if there is no VS2010_INSTALL_DIR specified -->
          <Condition Level="0">NOT VS2010_INSTALL_DIR</Condition>
          <ComponentGroupRef Id="VS2010_Extensions" />
@@ -81,14 +83,19 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
+      <!-- Execute action at the en of the installation -->
+      <!-- VS 2010 doesn't support the undocumented /updateconfiguration option -->
       <CustomAction Id="ExecuteVS2010Updateconfiguration"
          Directory="VS2010_INSTALL_DIR"
          Return="asyncWait"
          Execute="deferred"
          Impersonate="no"
-         ExeCommand="[VS2010_INSTALL_DIR]devenv.exe /setup"/>
+         ExeCommand="[VS2010DEVENV] /setup"/>
       <InstallExecuteSequence>
-         <Custom Action="ExecuteVS2010Updateconfiguration" Before="InstallFinalize">VS2010_INSTALL_DIR</Custom>
+         <Custom Action="ExecuteVS2010Updateconfiguration" Before="InstallFinalize">
+            <!-- Run action only if the feature will be installed locally. Do not run action on a reinstallation. -->
+            <![CDATA[VS2010_INSTALL_DIR AND (&VS2010_Extensions = 3) AND NOT (!VS2010_Extensions = 3)]]>
+         </Custom>
       </InstallExecuteSequence>
    </Fragment>
 </Wix>
