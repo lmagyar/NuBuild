@@ -63,7 +63,8 @@
          <ComponentRef Id="VS14_NuSpec_zip"/>
       </ComponentGroup>
       <!-- reference this feature from Product -->
-      <Feature Id="VS14_Extensions" Level="1"
+      <Feature Id="VS14_Extensions"
+               Level="7"
                Title="VS 2015 Extensions and Project Templates"
                Description="Integrates NuBuild extensions and project templates into Visual Studio 2015."
                AllowAdvertise="no" >

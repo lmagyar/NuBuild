@@ -16,7 +16,8 @@
          <ComponentRef Id="VS2010_NuSpec_xsd"/>
       </ComponentGroup>
       <!-- reference this feature from Product -->
-      <Feature Id="VS2010_Schemas" Level="1"
+      <Feature Id="VS2010_Schemas"
+               Level="10"
                Title="VS 2010 IntelliSense Support"
                Description="Integrates NuBuild schema files into Visual Studio 2010 IntelliSense."
                AllowAdvertise="no" >

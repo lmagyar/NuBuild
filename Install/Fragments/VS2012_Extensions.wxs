@@ -63,7 +63,8 @@
          <ComponentRef Id="VS2012_NuSpec_zip"/>
       </ComponentGroup>
       <!-- reference this feature from Product -->
-      <Feature Id="VS2012_Extensions" Level="1"
+      <Feature Id="VS2012_Extensions"
+               Level="9"
                Title="VS 2012 Extensions and Project Templates"
                Description="Integrates NuBuild extensions and project templates into Visual Studio 2012."
                AllowAdvertise="no" >

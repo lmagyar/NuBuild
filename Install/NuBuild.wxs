@@ -40,6 +40,21 @@
       <FeatureRef Id="VS2013_Schemas"/>
       <FeatureRef Id="VS14_Schemas"/>
 
+      <!-- by default select only the highest available version, but not the lower ones,
+           because several times older VS shell versions are also installed for other products -->
+      <SetProperty Id="INSTALLLEVEL" Action="SetInstallLevel_10" Value="10" Before="LaunchConditions">
+         <![CDATA[VS2010_INSTALL_DIR AND NOT VS2012_INSTALL_DIR AND NOT VS2013_INSTALL_DIR AND NOT VS14_INSTALL_DIR]]>
+      </SetProperty>
+      <SetProperty Id="INSTALLLEVEL" Action="SetInstallLevel_09" Value="9" Before="LaunchConditions">
+         <![CDATA[VS2012_INSTALL_DIR AND NOT VS2013_INSTALL_DIR AND NOT VS14_INSTALL_DIR]]>
+      </SetProperty>
+      <SetProperty Id="INSTALLLEVEL" Action="SetInstallLevel_08" Value="8" Before="LaunchConditions">
+         <![CDATA[VS2013_INSTALL_DIR AND NOT VS14_INSTALL_DIR]]>
+      </SetProperty>
+      <SetProperty Id="INSTALLLEVEL" Action="SetInstallLevel_07" Value="7" Before="LaunchConditions">
+         <![CDATA[VS14_INSTALL_DIR]]>
+      </SetProperty>
+      
       <!-- default dialogs to be able to select components -->
       <WixVariable Id="WixUIBannerBmp" Value="..\NuBuild.bmp" />
       <WixVariable Id="WixUILicenseRtf" Value="..\license.rtf" />

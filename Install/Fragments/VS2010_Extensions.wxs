@@ -66,7 +66,8 @@
          <ComponentRef Id="VS2010_NuSpec_zip"/>
       </ComponentGroup>
       <!-- reference this feature from Product -->
-      <Feature Id="VS2010_Extensions" Level="1"
+      <Feature Id="VS2010_Extensions"
+               Level="10"
                Title="VS 2010 Extensions and Project Templates"
                Description="Integrates NuBuild extensions and project templates into Visual Studio 2010."
                AllowAdvertise="no" >
