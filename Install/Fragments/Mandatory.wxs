@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Fragment Id="Mandatory">
+      <!-- reference this feature from Product -->
+      <Feature Id="Mandatory" Level="1"
+               Title="MSBuild Support"
+               Description="Integrates NuBuild build framework into MSBuild."
+               Absent="disallow" AllowAdvertise="no" >
+         <ComponentGroupRef Id="Mandatory_MSBuild_Binaries"/>
+         <!-- for v1 -->
+         <!--<ComponentGroupRef Id="Mandatory_Nuproj_Extension_Registry"/>-->
+      </Feature>
+   </Fragment>
+</Wix>

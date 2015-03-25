@@ -8,6 +8,38 @@
             <Directory Id="VS14ExtNuBuildFolder" Name="NuBuild">
                <!-- just to be similar to MSBuild v1 folder structure -->
                <!-- because we are not in ProgramFilesFolder, must specify a real guid instead of "*" -->
+               <!--<Directory Id="VS14ExtNuBuildV1Folder" Name="v1">
+                  <Component Id="VS14_NuBuild_VS_Package_v1_dll" Guid="{61741CCD-E78A-4414-8BF6-2909164B34E5}">
+                     <File Id="VS14_NuBuild_VS_Package_v1_dll" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.dll" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS14_NuBuild_Core_v1_dll" Guid="{BE1F4749-5775-4509-9B9A-39A9AF833F12}">
+                     <File Id="VS14_NuBuild_Core_v1_dll" Source="..\Bin\VSIX\NuBuild.Core.dll" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS14_NuBuild_VS_Package_v1_pkgdef" Guid="{E01DC618-3BE4-46EE-8022-DF34E2C1ECE4}">
+                     <File Id="VS14_NuBuild_VS_Package_v1_pkgdef" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.pkgdef" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS14_Extension_v1_vsixmanifest" Guid="{F5551DC5-C37A-456A-9752-32777E88CCFC}">
+                     <File Id="VS14_Extension_v1_vsixmanifest" Source="..\Bin\v1\VSIX\extension.vsixmanifest" KeyPath="yes"/>
+                  </Component>
+                  <Directory Id="VS14ExtNuBuildV1ResourcesFolder" Name="Resources">
+                     <Component Id="VS14_license_v1_txt" Guid="{DA91E6FB-5D00-46E8-9ABB-95D5FB3047CC}">
+                        <File Id="VS14_license_v1_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS14_NuBuild_v1_png" Guid="{70690210-626E-4BE5-AB1C-80843A8E0B07}">
+                        <File Id="VS14_NuBuild_v1_png" Source="..\Bin\VSIX\Resources\nubuild.png" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+                  <Directory Id="VS14ExtNuBuildV1ProjectTemplatesFolder" Name="ProjectTemplates">
+                     <Component Id="VS14_NuProj_v1_zip" Guid="{B5C72E89-8130-4551-98C6-05DD020F238B}">
+                        <File Id="VS14_NuProj_v1_zip" Source="..\Bin\v1\VSIX\ProjectTemplates\NuProj.zip" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+                  <Directory Id="VS14ExtNuBuildV1ItemTemplatesFolder" Name="ItemTemplates">
+                     <Component Id="VS14_NuSpec_v1_zip" Guid="{C53EA7BA-5F12-47BA-A510-9AD793841C58}">
+                        <File Id="VS14_NuSpec_v1_zip" Source="..\Bin\v1\VSIX\ItemTemplates\NuSpec.zip" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+               </Directory>-->
                <Directory Id="VS14ExtNuBuildV2Folder" Name="v2">
                   <Component Id="VS14_Microsoft_Web_XmlTransform_dll" Guid="135EB0B3-A15C-46D0-8D42-A3148DA6207E">
                      <File Id="VS14_Microsoft_Web_XmlTransform_dll" Source="..\Bin\VSIX\Microsoft.Web.XmlTransform.dll" KeyPath="yes"/>
@@ -51,6 +83,14 @@
       </DirectoryRef>
       <!-- group the components -->
       <ComponentGroup Id="VS14_Extensions">
+         <!--<ComponentRef Id="VS14_NuBuild_Core_v1_dll"/>
+         <ComponentRef Id="VS14_NuBuild_VS_Package_v1_dll"/>
+         <ComponentRef Id="VS14_NuBuild_VS_Package_v1_pkgdef"/>
+         <ComponentRef Id="VS14_Extension_v1_vsixmanifest"/>
+         <ComponentRef Id="VS14_license_v1_txt"/>
+         <ComponentRef Id="VS14_NuBuild_v1_png"/>
+         <ComponentRef Id="VS14_NuProj_v1_zip"/>
+         <ComponentRef Id="VS14_NuSpec_v1_zip"/>-->
          <ComponentRef Id="VS14_Microsoft_Web_XmlTransform_dll"/>
          <ComponentRef Id="VS14_NuGet_Core_dll"/>
          <ComponentRef Id="VS14_NuBuild_Core_dll"/>
@@ -62,16 +102,6 @@
          <ComponentRef Id="VS14_NuProj_zip"/>
          <ComponentRef Id="VS14_NuSpec_zip"/>
       </ComponentGroup>
-      <!-- reference this feature from Product -->
-      <Feature Id="VS14_Extensions"
-               Level="7"
-               Title="VS 2015 Extensions and Project Templates"
-               Description="Integrates NuBuild extensions and project templates into Visual Studio 2015."
-               AllowAdvertise="no" >
-         <!-- turn it off, if there is no VS14_INSTALL_DIR specified -->
-         <Condition Level="0">NOT VS14_INSTALL_DIR</Condition>
-         <ComponentGroupRef Id="VS14_Extensions" />
-      </Feature>
       <!-- VS14_INSTALL_DIR is not a predefined value like VS14_SCHEMAS_DIR -->
       <Property Id="VS14_INSTALL_DIR">
          <RegistrySearch
@@ -81,19 +111,19 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
-      <!-- Execute action at the en of the installation -->
+      <!-- Execute action at the end of the installation -->
       <!-- after installation, instead of /setup use the undocumented /updateconfiguration
            this is faster, only touches the extensions.configurationchanged file in the Extensions folder -->
       <CustomAction Id="ExecuteVS14Updateconfiguration"
-         Directory="VS2012_EXTENSIONS_DIR"
+         Directory="VS14_EXTENSIONS_DIR"
          Return="asyncWait"
          Execute="deferred"
          Impersonate="no"
-         ExeCommand="[VS2012DEVENV] /updateconfiguration"/>
+         ExeCommand="[VS14DEVENV] /updateconfiguration"/>
       <InstallExecuteSequence>
          <Custom Action="ExecuteVS14Updateconfiguration" Before="InstallFinalize">
             <!-- Run action only if the feature will be installed locally. Do not run action on a reinstallation. -->
-            <![CDATA[VS14_INSTALL_DIR AND (&VS14_Extensions = 3) AND NOT (!VS14_Extensions = 3)]]>
+            <![CDATA[VS14_INSTALL_DIR AND VS14_SCHEMAS_DIR AND (&VS14 = 3) AND NOT (!VS14 = 3)]]>
          </Custom>
       </InstallExecuteSequence>
    </Fragment>

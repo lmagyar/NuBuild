@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
    <PropertyGroup>
       <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-      <ProjectTypeGuids>{e09dd79a-4488-4ab9-8d3f-a7eee78bf432};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+      <ProjectTypeGuids>{165BA684-99B5-4AC7-AE57-2E317F2181F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
       <ProjectGuid>$guid1$</ProjectGuid>
       <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
       <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>

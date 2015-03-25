@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Vsix Version="1.0.0"
       xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-   <Identifier Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64">
+   <Identifier Id="7B88A25E-158B-4EFE-AD94-C861FFEF880C">
       <Version>2.4.2</Version>
       <Name>NuBuild Project System</Name>
       <Author>NuBuild</Author>
@@ -47,7 +47,7 @@
       xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011"
       xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
    <Metadata>
-      <Identity Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64"
+      <Identity Id="7B88A25E-158B-4EFE-AD94-C861FFEF880C"
          Version="2.4.2"
          Publisher="NuBuild"
          Language="en-US" />

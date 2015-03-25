@@ -30,15 +30,11 @@
       <Directory Id="TARGETDIR" Name="SourceDir"/>
 
       <!-- select all the features from the fragments -->
-      <FeatureRef Id="VS2010_Extensions"/>
-      <FeatureRef Id="VS2012_Extensions"/>
-      <FeatureRef Id="VS2013_Extensions"/>
-      <FeatureRef Id="VS14_Extensions"/>
-      <FeatureRef Id="MSBuild_Binaries"/>
-      <FeatureRef Id="VS2010_Schemas"/>
-      <FeatureRef Id="VS2012_Schemas"/>
-      <FeatureRef Id="VS2013_Schemas"/>
-      <FeatureRef Id="VS14_Schemas"/>
+      <FeatureRef Id="VS2010"/>
+      <FeatureRef Id="VS2012"/>
+      <FeatureRef Id="VS2013"/>
+      <FeatureRef Id="VS14"/>
+      <FeatureRef Id="Mandatory"/>
 
       <!-- by default select only the highest available version, but not the lower ones,
            because several times older VS shell versions are also installed for other products -->
@@ -60,28 +56,4 @@
       <WixVariable Id="WixUILicenseRtf" Value="..\license.rtf" />
       <UIRef Id="WixUI_FeatureTree" />
    </Product>
-   
-   <!-- from v1.x, to be used later in a dual version -->
-   <!--<Fragment Id="Nuproj_Extension_Registry">
-      <Feature Id="Nuproj_Extension_Registry">
-         <Component Id="NuBuild_Reg_nuproj" Guid="*" Directory="MSBuildNuBuildV1Folder">
-            <RegistryKey Root="HKCR" Key=".nuproj">
-               <RegistryValue Type="string" Value="NuBuild.NuProj"/>
-            </RegistryKey>
-            <RegistryKey Root="HKCR" Key="NuBuild.NuProj">
-               <RegistryValue Type="string" Value="NuBuild project file"/>
-               <RegistryKey Key="DefaultIcon">
-                  <RegistryValue Type="string" Value="[MSBuildNuBuildV1Folder]NuBuild.Core.dll"/>
-               </RegistryKey>
-               <RegistryKey Key="shell">
-                  <RegistryKey Key="Open">
-                     <RegistryKey Key="Command">
-                        <RegistryValue Type="string" Value='[ProgramFilesFolder]Common Files\Microsoft Shared\MSEnv\VSLauncher.exe "%1"'/>
-                     </RegistryKey>
-                  </RegistryKey>
-               </RegistryKey>
-            </RegistryKey>
-         </Component>
-      </Feature>
-   </Fragment>-->
 </Wix>

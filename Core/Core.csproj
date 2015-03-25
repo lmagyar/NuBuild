@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{DF1AC33F-7D8D-473C-AD88-2CA4EDAD3B70}</ProjectGuid>
+    <ProjectGuid>{3006423B-43D7-4906-9AB6-437B4123D120}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>NuBuild</RootNamespace>
     <AssemblyName>NuBuild.Core</AssemblyName>
@@ -30,6 +30,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>..\NuBuild.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

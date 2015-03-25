@@ -10,7 +10,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1E196872-CD2A-41DC-AFDB-4CF0B34EEB26}</ProjectGuid>
+    <ProjectGuid>{78597F17-1625-4F15-8F0B-7B060186730E}</ProjectGuid>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -21,7 +21,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DeployExtension>true</DeployExtension>
+    <DeployExtension>False</DeployExtension>
     <DeployVSTemplates>true</DeployVSTemplates>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -184,11 +184,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.csproj">
-      <Project>{DF1AC33F-7D8D-473C-AD88-2CA4EDAD3B70}</Project>
+      <Project>{3006423B-43D7-4906-9AB6-437B4123D120}</Project>
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\ItemTemplate\ItemTemplate.csproj">
-      <Project>{6045E4AC-6183-42B4-9880-AD01F46A36ED}</Project>
+      <Project>{E6C0E75C-595A-489B-A087-9CCF5FE5CD6B}</Project>
       <Name>ItemTemplate</Name>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <TemplateType>Item</TemplateType>
@@ -196,7 +196,7 @@
       <VSIXSubPath>ItemTemplates</VSIXSubPath>
     </ProjectReference>
     <ProjectReference Include="..\ProjectTemplate\ProjectTemplate.csproj">
-      <Project>{8E6F74CF-7D2C-4BDC-979B-23654E2B9587}</Project>
+      <Project>{4EB9595C-01F9-4A27-B58D-FDDB1088ACBF}</Project>
       <Name>ProjectTemplate</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>

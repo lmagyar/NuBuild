@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Fragment Id="VS2013">
+      <!-- reference this feature from Product -->
+      <Feature Id="VS2013"
+               Level="8"
+               Title="VS 2013 Support"
+               Description="Integrates NuBuild extensions, project templates and schema files into Visual Studio 2013."
+               AllowAdvertise="no" >
+         <!-- turn it off, if there is no VS2013_INSTALL_DIR or VS2013_SCHEMAS_DIR specified -->
+         <Condition Level="0">NOT VS2013_INSTALL_DIR OR NOT VS2013_SCHEMAS_DIR</Condition>
+         <ComponentGroupRef Id="VS2013_Extensions" />
+         <ComponentGroupRef Id="VS2013_Schemas"/>
+      </Feature>
+   </Fragment>
+</Wix>

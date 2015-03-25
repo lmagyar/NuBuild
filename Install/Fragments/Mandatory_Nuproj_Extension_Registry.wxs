@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <!-- for v1 -->
+   <Fragment Id="Mandatory_Nuproj_Extension_Registry">
+      <!--<PropertyRef Id="MSBuildNuBuildV1Folder"/>-->
+      <!--<DirectoryRef Id="MSBuildNuBuildV1Folder">
+         <Component Id="Nuproj_Reg_nuproj" Guid="*">
+            <RegistryKey Root="HKCR" Key=".nuproj">
+               <RegistryValue Type="string" Value="NuBuild.NuProj"/>
+            </RegistryKey>
+            <RegistryKey Root="HKCR" Key="NuBuild.NuProj">
+               <RegistryValue Type="string" Value="NuBuild project file"/>
+               <RegistryKey Key="DefaultIcon">
+                  <RegistryValue Type="string" Value="[MSBuildNuBuildV1Folder]NuBuild.Core.dll"/>
+               </RegistryKey>
+               <RegistryKey Key="shell">
+                  <RegistryKey Key="Open">
+                     <RegistryKey Key="Command">
+                        <RegistryValue Type="string" Value='[ProgramFilesFolder]Common Files\Microsoft Shared\MSEnv\VSLauncher.exe "%1"'/>
+                     </RegistryKey>
+                  </RegistryKey>
+               </RegistryKey>
+            </RegistryKey>
+         </Component>
+      </DirectoryRef>-->
+      <!-- group the components, in case there will be multiple components in the future -->
+      <!--<ComponentGroup Id="Mandatory_Nuproj_Extension_Registry">
+         <ComponentRef Id="Nuproj_Reg_nuproj"/>
+      </ComponentGroup>-->
+   </Fragment>
+</Wix>

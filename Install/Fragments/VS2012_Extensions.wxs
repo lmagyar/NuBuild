@@ -8,6 +8,38 @@
             <Directory Id="VS2012ExtNuBuildFolder" Name="NuBuild">
                <!-- just to be similar to MSBuild v1 folder structure -->
                <!-- because we are not in ProgramFilesFolder, must specify a real guid instead of "*" -->
+               <!--<Directory Id="VS2012ExtNuBuildV1Folder" Name="v1">
+                  <Component Id="VS2012_NuBuild_VS_Package_v1_dll" Guid="{5F4701E0-D4FC-41A3-82E5-23BDCC17FCDA}">
+                     <File Id="VS2012_NuBuild_VS_Package_v1_dll" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.dll" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS2012_NuBuild_Core_v1_dll" Guid="{58E63899-FCA5-4296-B8A9-59E32D0FE494}">
+                     <File Id="VS2012_NuBuild_Core_v1_dll" Source="..\Bin\VSIX\NuBuild.Core.dll" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS2012_NuBuild_VS_Package_v1_pkgdef" Guid="{39F75623-330F-44B3-B3F9-EC81E31BDAE9}">
+                     <File Id="VS2012_NuBuild_VS_Package_v1_pkgdef" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.pkgdef" KeyPath="yes"/>
+                  </Component>
+                  <Component Id="VS2012_Extension_v1_vsixmanifest" Guid="{542CB291-07B7-4D15-AA0F-0275DA148438}">
+                     <File Id="VS2012_Extension_v1_vsixmanifest" Source="..\Bin\v1\VSIX\extension.vsixmanifest" KeyPath="yes"/>
+                  </Component>
+                  <Directory Id="VS2012ExtNuBuildV1ResourcesFolder" Name="Resources">
+                     <Component Id="VS2012_license_v1_txt" Guid="{54AA23C4-1735-4520-B790-CB7BCC9FC37D}">
+                        <File Id="VS2012_license_v1_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2012_NuBuild_v1_png" Guid="{D889968E-0442-4AFA-80E0-7E5D28A788CD}">
+                        <File Id="VS2012_NuBuild_v1_png" Source="..\Bin\VSIX\Resources\nubuild.png" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+                  <Directory Id="VS2012ExtNuBuildV1ProjectTemplatesFolder" Name="ProjectTemplates">
+                     <Component Id="VS2012_NuProj_v1_zip" Guid="{B544D530-3A85-467F-8621-2089D81345F0}">
+                        <File Id="VS2012_NuProj_v1_zip" Source="..\Bin\v1\VSIX\ProjectTemplates\NuProj.zip" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+                  <Directory Id="VS2012ExtNuBuildV1ItemTemplatesFolder" Name="ItemTemplates">
+                     <Component Id="VS2012_NuSpec_v1_zip" Guid="{FB2F5A86-5570-4B3C-AA74-60E54FA5F92D}">
+                        <File Id="VS2012_NuSpec_v1_zip" Source="..\Bin\v1\VSIX\ItemTemplates\NuSpec.zip" KeyPath="yes"/>
+                     </Component>
+                  </Directory>
+               </Directory>-->
                <Directory Id="VS2012ExtNuBuildV2Folder" Name="v2">
                   <Component Id="VS2012_Microsoft_Web_XmlTransform_dll" Guid="4840DBC8-A8AD-4B1D-BC89-75D7243B5030">
                      <File Id="VS2012_Microsoft_Web_XmlTransform_dll" Source="..\Bin\VSIX\Microsoft.Web.XmlTransform.dll" KeyPath="yes"/>
@@ -51,6 +83,14 @@
       </DirectoryRef>
       <!-- group the components -->
       <ComponentGroup Id="VS2012_Extensions">
+         <!--<ComponentRef Id="VS2012_NuBuild_Core_v1_dll"/>
+         <ComponentRef Id="VS2012_NuBuild_VS_Package_v1_dll"/>
+         <ComponentRef Id="VS2012_NuBuild_VS_Package_v1_pkgdef"/>
+         <ComponentRef Id="VS2012_Extension_v1_vsixmanifest"/>
+         <ComponentRef Id="VS2012_license_v1_txt"/>
+         <ComponentRef Id="VS2012_NuBuild_v1_png"/>
+         <ComponentRef Id="VS2012_NuProj_v1_zip"/>
+         <ComponentRef Id="VS2012_NuSpec_v1_zip"/>-->
          <ComponentRef Id="VS2012_Microsoft_Web_XmlTransform_dll"/>
          <ComponentRef Id="VS2012_NuGet_Core_dll"/>
          <ComponentRef Id="VS2012_NuBuild_Core_dll"/>
@@ -62,16 +102,6 @@
          <ComponentRef Id="VS2012_NuProj_zip"/>
          <ComponentRef Id="VS2012_NuSpec_zip"/>
       </ComponentGroup>
-      <!-- reference this feature from Product -->
-      <Feature Id="VS2012_Extensions"
-               Level="9"
-               Title="VS 2012 Extensions and Project Templates"
-               Description="Integrates NuBuild extensions and project templates into Visual Studio 2012."
-               AllowAdvertise="no" >
-         <!-- turn it off, if there is no VS2012_INSTALL_DIR specified -->
-         <Condition Level="0">NOT VS2012_INSTALL_DIR</Condition>
-         <ComponentGroupRef Id="VS2012_Extensions" />
-      </Feature>
       <!-- VS2012_INSTALL_DIR is not a predefined value like VS2012_SCHEMAS_DIR -->
       <Property Id="VS2012_INSTALL_DIR">
          <RegistrySearch
@@ -81,7 +111,7 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
-      <!-- Execute action at the en of the installation -->
+      <!-- Execute action at the end of the installation -->
       <!-- after installation, instead of /setup use the undocumented /updateconfiguration
            this is faster, only touches the extensions.configurationchanged file in the Extensions folder -->
       <CustomAction Id="ExecuteVS2012Updateconfiguration"
@@ -93,7 +123,7 @@
       <InstallExecuteSequence>
          <Custom Action="ExecuteVS2012Updateconfiguration" Before="InstallFinalize">
             <!-- Run action only if the feature will be installed locally. Do not run action on a reinstallation. -->
-            <![CDATA[VS2012_INSTALL_DIR AND (&VS2012_Extensions = 3) AND NOT (!VS2012_Extensions = 3)]]>
+            <![CDATA[VS2012_INSTALL_DIR AND VS2012_SCHEMAS_DIR AND (&VS2012 = 3) AND NOT (!VS2012 = 3)]]>
          </Custom>
       </InstallExecuteSequence>
    </Fragment>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Fragment Id="VS2010">
+      <!-- reference this feature from Product -->
+      <Feature Id="VS2010"
+               Level="10"
+               Title="VS 2010 Support"
+               Description="Integrates NuBuild extensions, project templates and schema files into Visual Studio 2010."
+               AllowAdvertise="no" >
+         <!-- turn it off, if there is no VS2010_INSTALL_DIR or VS2010_SCHEMAS_DIR specified -->
+         <Condition Level="0">NOT VS2010_INSTALL_DIR OR NOT VS2010_SCHEMAS_DIR</Condition>
+         <ComponentGroupRef Id="VS2010_Extensions" />
+         <ComponentGroupRef Id="VS2010_Schemas"/>
+      </Feature>
+   </Fragment>
+</Wix>

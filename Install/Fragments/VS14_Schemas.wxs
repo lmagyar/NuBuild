@@ -15,15 +15,5 @@
       <ComponentGroup Id="VS14_Schemas">
          <ComponentRef Id="VS14_NuSpec_xsd"/>
       </ComponentGroup>
-      <!-- reference this feature from Product -->
-      <Feature Id="VS14_Schemas"
-               Level="7"
-               Title="VS 2015 IntelliSense Support"
-               Description="Integrates NuBuild schema files into Visual Studio 2015 IntelliSense."
-               AllowAdvertise="no" >
-         <!-- turn it off, if there is no VS14_SCHEMAS_DIR specified -->
-         <Condition Level="0">NOT VS14_SCHEMAS_DIR</Condition>
-         <ComponentGroupRef Id="VS14_Schemas"/>
-      </Feature>
    </Fragment>
 </Wix>

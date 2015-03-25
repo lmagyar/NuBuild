@@ -10,6 +10,38 @@
                <Directory Id="VS2010ExtNuBuildFolder" Name="NuBuild">
                   <!-- just to be similar to MSBuild v1 folder structure -->
                   <!-- because we are not in ProgramFilesFolder, must specify a real guid instead of "*" -->
+                  <!--<Directory Id="VS2010ExtNuBuildV1Folder" Name="v1">
+                     <Component Id="VS2010_NuBuild_VS_Package_v1_dll" Guid="{695A5D27-3FB8-4958-A930-D3D308A26945}">
+                        <File Id="VS2010_NuBuild_VS_Package_v1_dll" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2010_NuBuild_Core_v1_dll" Guid="{B44C8CDF-269B-42D4-8226-4CFD8C3650C7}">
+                        <File Id="VS2010_NuBuild_Core_v1_dll" Source="..\Bin\VSIX\NuBuild.Core.dll" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2010_NuBuild_VS_Package_v1_pkgdef" Guid="{E72F1419-6C09-43D1-B622-E689E2AE696D}">
+                        <File Id="VS2010_NuBuild_VS_Package_v1_pkgdef" Source="..\Bin\v1\VSIX\NuBuild.VS.Package.v1.pkgdef" KeyPath="yes"/>
+                     </Component>
+                     <Component Id="VS2010_Extension_v1_vsixmanifest" Guid="{2A950DC8-91CB-46F0-A022-03FA8C075043}">
+                        <File Id="VS2010_Extension_v1_vsixmanifest" Source="..\Bin\v1\VSIX\extension.vsixmanifest" KeyPath="yes"/>
+                     </Component>
+                     <Directory Id="VS2010ExtNuBuildV1ResourcesFolder" Name="Resources">
+                        <Component Id="VS2010_license_v1_txt" Guid="{A04B568B-6CC3-4DF6-B5F0-B022C57BB695}">
+                           <File Id="VS2010_license_v1_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
+                        </Component>
+                        <Component Id="VS2010_NuBuild_v1_png" Guid="{6A7C3DA1-40D9-4D3C-B278-7DBBBA3618ED}">
+                           <File Id="VS2010_NuBuild_v1_png" Source="..\Bin\VSIX\Resources\NuBuild.png" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                     <Directory Id="VS2010ExtNuBuildV1ProjectTemplatesFolder" Name="ProjectTemplates">
+                        <Component Id="VS2010_NuProj_v1_zip" Guid="{E780E9E9-4128-4AA3-901D-7224C4AF8261}">
+                           <File Id="VS2010_NuProj_v1_zip" Source="..\Bin\v1\VSIX\ProjectTemplates\NuProj.zip" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                     <Directory Id="VS2010ExtNuBuildV1ItemTemplatesFolder" Name="ItemTemplates">
+                        <Component Id="VS2010_NuSpec_v1_zip" Guid="{470120E5-116A-4781-86BB-37023EE0C1E1}">
+                           <File Id="VS2010_NuSpec_v1_zip" Source="..\Bin\v1\VSIX\ItemTemplates\NuSpec.zip" KeyPath="yes"/>
+                        </Component>
+                     </Directory>
+                  </Directory>-->
                   <Directory Id="VS2010ExtNuBuildV2Folder" Name="v2">
                      <Component Id="VS2010_Microsoft_Web_XmlTransform_dll" Guid="099C7840-CF87-4433-BC6E-0CA2E34F9756">
                         <File Id="VS2010_Microsoft_Web_XmlTransform_dll" Source="..\Bin\VSIX\Microsoft.Web.XmlTransform.dll" KeyPath="yes"/>
@@ -54,6 +86,14 @@
       </DirectoryRef>
       <!-- group the components -->
       <ComponentGroup Id="VS2010_Extensions">
+         <!--<ComponentRef Id="VS2010_NuBuild_Core_v1_dll"/>
+         <ComponentRef Id="VS2010_NuBuild_VS_Package_v1_dll"/>
+         <ComponentRef Id="VS2010_NuBuild_VS_Package_v1_pkgdef"/>
+         <ComponentRef Id="VS2010_Extension_v1_vsixmanifest"/>
+         <ComponentRef Id="VS2010_license_v1_txt"/>
+         <ComponentRef Id="VS2010_NuBuild_v1_png"/>
+         <ComponentRef Id="VS2010_NuProj_v1_zip"/>
+         <ComponentRef Id="VS2010_NuSpec_v1_zip"/>-->
          <ComponentRef Id="VS2010_Microsoft_Web_XmlTransform_dll"/>
          <ComponentRef Id="VS2010_NuGet_Core_dll"/>
          <ComponentRef Id="VS2010_NuBuild_Core_dll"/>
@@ -65,16 +105,6 @@
          <ComponentRef Id="VS2010_NuProj_zip"/>
          <ComponentRef Id="VS2010_NuSpec_zip"/>
       </ComponentGroup>
-      <!-- reference this feature from Product -->
-      <Feature Id="VS2010_Extensions"
-               Level="10"
-               Title="VS 2010 Extensions and Project Templates"
-               Description="Integrates NuBuild extensions and project templates into Visual Studio 2010."
-               AllowAdvertise="no" >
-         <!-- turn it off, if there is no VS2010_INSTALL_DIR specified -->
-         <Condition Level="0">NOT VS2010_INSTALL_DIR</Condition>
-         <ComponentGroupRef Id="VS2010_Extensions" />
-      </Feature>
       <!-- VS2010_INSTALL_DIR is not a predefined value like VS2010_SCHEMAS_DIR -->
       <Property Id="VS2010_INSTALL_DIR">
          <RegistrySearch
@@ -84,7 +114,7 @@
             Name="InstallDir"
             Type="directory" />
       </Property>
-      <!-- Execute action at the en of the installation -->
+      <!-- Execute action at the end of the installation -->
       <!-- VS 2010 doesn't support the undocumented /updateconfiguration option -->
       <CustomAction Id="ExecuteVS2010Updateconfiguration"
          Directory="VS2010_INSTALL_DIR"
@@ -95,7 +125,7 @@
       <InstallExecuteSequence>
          <Custom Action="ExecuteVS2010Updateconfiguration" Before="InstallFinalize">
             <!-- Run action only if the feature will be installed locally. Do not run action on a reinstallation. -->
-            <![CDATA[VS2010_INSTALL_DIR AND (&VS2010_Extensions = 3) AND NOT (!VS2010_Extensions = 3)]]>
+            <![CDATA[VS2010_INSTALL_DIR AND VS2010_SCHEMAS_DIR AND (&VS2010 = 3) AND NOT (!VS2010 = 3)]]>
          </Custom>
       </InstallExecuteSequence>
    </Fragment>

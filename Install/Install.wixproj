@@ -17,13 +17,19 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Fragments\Mandatory.wxs" />
+    <Compile Include="Fragments\Mandatory_Nuproj_Extension_Registry.wxs" />
+    <Compile Include="Fragments\VS2010.wxs" />
+    <Compile Include="Fragments\VS2012.wxs" />
+    <Compile Include="Fragments\VS14.wxs" />
     <Compile Include="Fragments\VS14_Extensions.wxs" />
     <Compile Include="Fragments\VS14_Schemas.wxs" />
-    <Compile Include="Fragments\MSBuild_Binaries.wxs" />
+    <Compile Include="Fragments\Mandatory_MSBuild_Binaries.wxs" />
     <Compile Include="Fragments\VS2010_Extensions.wxs" />
     <Compile Include="Fragments\VS2010_Schemas.wxs" />
     <Compile Include="Fragments\VS2012_Extensions.wxs" />
     <Compile Include="Fragments\VS2012_Schemas.wxs" />
+    <Compile Include="Fragments\VS2013.wxs" />
     <Compile Include="Fragments\VS2013_Extensions.wxs" />
     <Compile Include="Fragments\VS2013_Schemas.wxs" />
     <Compile Include="NuBuild.wxs" />

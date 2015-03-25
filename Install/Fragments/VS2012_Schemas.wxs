@@ -15,15 +15,5 @@
       <ComponentGroup Id="VS2012_Schemas">
          <ComponentRef Id="VS2012_NuSpec_xsd"/>
       </ComponentGroup>
-      <!-- reference this feature from Product -->
-      <Feature Id="VS2012_Schemas"
-               Level="9"
-               Title="VS 2012 IntelliSense Support"
-               Description="Integrates NuBuild schema files into Visual Studio 2012 IntelliSense."
-               AllowAdvertise="no" >
-         <!-- turn it off, if there is no VS2012_SCHEMAS_DIR specified -->
-         <Condition Level="0">NOT VS2012_SCHEMAS_DIR</Condition>
-         <ComponentGroupRef Id="VS2012_Schemas"/>
-      </Feature>
    </Fragment>
 </Wix>

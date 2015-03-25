@@ -41,7 +41,7 @@ namespace NuBuild.VS
    [Guid(NuBuildPackage.PackageGuidString)]
    [ProvideProjectFactory(
       typeof(NuBuildFactory),
-      "NuGet packaging project",
+      "NuBuild Project File",
       null,
       null,
       null,

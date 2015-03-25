@@ -39,7 +39,8 @@ namespace NuBuild.VS
    [Guid(NuBuildFactory.FactoryGuidString)]
    public sealed class NuBuildFactory : FlavoredProjectFactoryBase
    {
-      public const String FactoryGuidString = "e09dd79a-4488-4ab9-8d3f-a7eee78bf432";
+      //public const String FactoryGuidString = "e09dd79a-4488-4ab9-8d3f-a7eee78bf432";
+      public const String FactoryGuidString = "165BA684-99B5-4AC7-AE57-2E317F2181F1";
       public static readonly Guid FactoryGuid = new Guid(FactoryGuidString);
       NuBuildPackage package;
 
@@ -55,7 +56,7 @@ namespace NuBuild.VS
       }
 
       /// <summary>
-      /// Create an instance of NuBuildNode. 
+      /// Creates an instance of NuBuildNode. 
       /// The initialization will be done later when Visual Studio calls
       /// InitalizeForOuter on it.
       /// </summary>

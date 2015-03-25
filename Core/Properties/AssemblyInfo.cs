@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 // Project References
 
-[assembly:Guid("DF1AC33F-7D8D-473C-AD88-2CA4EDAD3B70")]
+[assembly:Guid("3006423B-43D7-4906-9AB6-437B4123D120")]
 [assembly:AssemblyProduct("NuGet Project System")]
 [assembly:AssemblyTitle("NuGet Project System Core Library")]
 [assembly:AssemblyCompany("Brent M. Spell")]

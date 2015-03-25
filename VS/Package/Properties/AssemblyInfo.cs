@@ -25,9 +25,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 // Project References
 
-[assembly:Guid("1E196872-CD2A-41DC-AFDB-4CF0B34EEB26")]
-[assembly:AssemblyProduct("NuGet Project System")]
-[assembly:AssemblyTitle("NuGet Project System Visual Studio Package")]
+[assembly:Guid("78597F17-1625-4F15-8F0B-7B060186730E")]
+[assembly:AssemblyProduct("NuBuild Project System")]
+[assembly:AssemblyTitle("NuBuild Project System Visual Studio Package")]
 [assembly:AssemblyCompany("Brent M. Spell")]
 [assembly:AssemblyCopyright("Copyright © 2012 Brent M. Spell. All Rights Reserved.")]
 [assembly:CLSCompliant(false)]
