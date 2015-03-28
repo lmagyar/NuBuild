@@ -180,9 +180,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="Resources\NuBuild.vsct" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{3006423B-43D7-4906-9AB6-437B4123D120}</Project>
       <Name>Core</Name>

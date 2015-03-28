@@ -3,5 +3,5 @@
    <?define ProductVersion = "2.4.2" ?>
    <?define ProductName="NuBuild Project System" ?>
    <?define ProductManufacturer="NuBuild" ?>
-   <?define ProductDescription="NuGet build framework and project templates" ?>
+   <?define ProductDescription="A NuGet packager project system for Visual Studio" ?>
 </Include>

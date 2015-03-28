@@ -21,19 +21,18 @@
 // System References
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 // Project References
 
-[assembly:Guid("3006423B-43D7-4906-9AB6-437B4123D120")]
-[assembly:AssemblyProduct("NuGet Project System")]
-[assembly:AssemblyTitle("NuGet Project System Core Library")]
-[assembly:AssemblyCompany("Brent M. Spell")]
-[assembly:AssemblyCopyright("Copyright © 2012 Brent M. Spell. All Rights Reserved.")]
-[assembly:CLSCompliant(false)]
-[assembly:ComVisible(false)]
+[assembly: Guid("3006423B-43D7-4906-9AB6-437B4123D120")]
+[assembly: AssemblyProduct("NuBuild Project System")]
+[assembly: AssemblyTitle("NuBuild Project System Core Library")]
+[assembly: AssemblyCompany("Brent M. Spell")]
+[assembly: AssemblyCopyright("Copyright © 2012 Brent M. Spell. All Rights Reserved.")]
+[assembly: CLSCompliant(false)]
+[assembly: ComVisible(false)]
 #if DEBUG
-[assembly:AssemblyConfiguration("Debug")]
+[assembly: AssemblyConfiguration("Debug")]
 #else
-[assembly:AssemblyConfiguration("Release")]
+[assembly: AssemblyConfiguration("Release")]
 #endif

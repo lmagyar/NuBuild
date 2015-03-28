@@ -5,11 +5,13 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{5CB348A3-A73A-43CB-8CF9-AC9CD06B6DEA}"
 	ProjectSection(SolutionItems) = preProject
+		Key.snk = Key.snk
 		license.rtf = license.rtf
 		license.txt = license.txt
 		NuBuild.bmp = NuBuild.bmp
 		NuBuild.ico = NuBuild.ico
 		NuBuild.png = NuBuild.png
+		README.md = README.md
 		Version.cs = Version.cs
 	EndProjectSection
 EndProject
@@ -57,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{553F00
 		VS\Config\NuSpec.xsd = VS\Config\NuSpec.xsd
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{91FB58D7-607F-4EF8-8C26-254D98F41A55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -98,5 +102,6 @@ Global
 		{E6C0E75C-595A-489B-A087-9CCF5FE5CD6B} = {C24B7D6C-4641-4065-8912-2B2DB61D850C}
 		{A0B266F8-F6A5-4A13-9403-F2E07B963F21} = {D7419DD1-E3EC-4E82-80A1-BE293E3E67D6}
 		{553F0052-0580-4992-BE6A-296017F3E567} = {C24B7D6C-4641-4065-8912-2B2DB61D850C}
+		{91FB58D7-607F-4EF8-8C26-254D98F41A55} = {5CB348A3-A73A-43CB-8CF9-AC9CD06B6DEA}
 	EndGlobalSection
 EndGlobal

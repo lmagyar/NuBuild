@@ -27,11 +27,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>..\NuBuild.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>

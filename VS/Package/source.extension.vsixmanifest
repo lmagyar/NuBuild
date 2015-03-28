@@ -5,7 +5,7 @@
       <Version>2.4.2</Version>
       <Name>NuBuild Project System</Name>
       <Author>NuBuild</Author>
-      <Description xml:space="preserve">NuGet build framework and project templates</Description>
+      <Description xml:space="preserve">A NuGet packager project system for Visual Studio</Description>
       <Locale>1033</Locale>
       <MoreInfoUrl>http://github.com/bspell1/nubuild</MoreInfoUrl>
       <License>Resources\license.txt</License>
@@ -52,7 +52,7 @@
          Publisher="NuBuild"
          Language="en-US" />
       <DisplayName>NuBuild Project System</DisplayName>
-      <Description>NuGet build framework and project templates</Description>
+      <Description>A NuGet packager project system for Visual Studio</Description>
       <MoreInfo>http://github.com/bspell1/nubuild</MoreInfo>
       <License>Resources\license.txt</License>
       <Icon>Resources\NuBuild.png</Icon>
