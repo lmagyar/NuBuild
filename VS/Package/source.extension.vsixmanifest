@@ -2,7 +2,7 @@
 <Vsix Version="1.0.0"
       xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
    <Identifier Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64">
-      <Version>2.4.3</Version>
+      <Version>2.4.4</Version>
       <Name>NuBuild Project System</Name>
       <Author>NuBuild</Author>
       <Description xml:space="preserve">NuGet build framework and project templates</Description>
@@ -48,7 +48,7 @@
       xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
    <Metadata>
       <Identity Id="d4cda160-3cb8-4614-a9ed-f845cb2ddc64"
-         Version="2.4.3"
+         Version="2.4.4"
          Publisher="NuBuild"
          Language="en-US" />
       <DisplayName>NuBuild Project System</DisplayName>
