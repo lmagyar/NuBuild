@@ -129,17 +129,15 @@ namespace NuBuild.MSBuild
             if (this.ReferenceLibraries == null)
                this.ReferenceLibraries = new ITaskItem[0];
             this.OutputPath = Path.GetFullPath(this.OutputPath);
-            propertyProvider = new PropertyProvider(ProjectPath, ReferenceLibraries
-               .Where(libItem =>
-               {
-                  var copyLocal = libItem.GetMetadata("Private");
-                  return !ProjectHelper.NuspecItem(libItem) &&
-                     (String.IsNullOrEmpty(copyLocal) || String.Compare(copyLocal, "false", true) != 0);
-               }).ToArray());
+            propertyProvider = new PropertyProvider(ProjectPath, this.ReferenceLibraries
+               .ValidReferenceLibraryForNuSource()
+               .ValidReferenceLibraryForPropertyProvider()
+               .ToArray());
             Directory.CreateDirectory(this.OutputPath);
             // add build dependencies from the nuspec file(s)
             // and the list of project references
-            this.sourceList.AddRange(this.ReferenceLibraries);
+            this.sourceList.AddRange(this.ReferenceLibraries
+               .ValidReferenceLibraryForNuSource());
             // parse the version source name
             this.versionSource = (VersionSource)Enum.Parse(
                typeof(VersionSource), 
@@ -326,6 +324,7 @@ namespace NuBuild.MSBuild
          //   file
          // . return the version of the first file with a version
          return this.ReferenceLibraries
+            .ValidReferenceLibraryForNuSource()
             .Select(i => i.GetMetadata("FullPath"))
             .Concat(
                fileElems.Select(
