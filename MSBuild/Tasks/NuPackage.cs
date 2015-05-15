@@ -140,12 +140,10 @@ namespace NuBuild.MSBuild
             if (this.ReferenceLibraries == null)
                this.ReferenceLibraries = new ITaskItem[0];
             this.OutputPath = Path.GetFullPath(this.OutputPath);
-            propertyProvider = new PropertyProvider(ProjectPath, ReferenceLibraries
-                .Where(libItem => 
-                {
-                    var copyLocal = libItem.GetMetadata("Private");
-                    return String.IsNullOrEmpty(copyLocal) || String.Compare(copyLocal, "false", true) != 0;
-                }).ToArray());
+            propertyProvider = new PropertyProvider(ProjectPath, this.ReferenceLibraries
+               .ValidReferenceLibraryForNuSource()
+               .ValidReferenceLibraryForPropertyProvider()
+               .ToArray());
             // compile the nuget package
             foreach (var specItem in this.NuSpec)
                BuildPackage(specItem);
@@ -231,7 +229,8 @@ namespace NuBuild.MSBuild
          // . everything else goes in the content package folder
          // . folders may be overridden using NuBuildTargetFolder metadata (lib\net40, etc.)
          // . folders may be overridden using TargetFramework attribute (lib\net40, etc.)
-         foreach (var libItem in this.ReferenceLibraries)
+         foreach (var libItem in this.ReferenceLibraries
+            .ValidReferenceLibraryForNuSource())
          {
             //AddFile(builder, libItem.GetMetadata("FullPath"), libItem.GetMetadata("NuBuildTargetFolder"));
             var srcPath = libItem.GetMetadata("FullPath"); ;

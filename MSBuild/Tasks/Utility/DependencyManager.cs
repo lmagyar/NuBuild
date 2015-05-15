@@ -99,7 +99,7 @@ namespace NuBuild.MSBuild
          // collecting reference information to variables
          foreach (var prjPath in referenceProjects
             .FullPath()
-            .ValidItem())
+            .ValidProjectForDependencyCollection())
          {
             var prjFactory = new ProjectFactory(prjPath);
             prjFactory.CollectDependencies(referenceProjectFactories,
@@ -127,7 +127,7 @@ namespace NuBuild.MSBuild
          // collecting nubuild reference information to variables
          foreach (var prjPath in referenceProjects
             .FullPath()
-            .NuspecItem())
+            .ValidProjectForNuBuildDependencyCollection())
          {
             var prjFactory = new ProjectFactory(prjPath);
             prjFactory.CollectNuBuildDependencies(nuBuildReferenceProjectFactories);

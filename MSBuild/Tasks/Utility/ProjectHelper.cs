@@ -87,33 +87,51 @@ namespace NuBuild.MSBuild
             .Select(item => item.GetMetadata("FullPath"));
       }
 
-      public static bool ValidItem(string fullPath)
+      public static bool ValidProjectForDependencyCollection(string fullPath)
       {
          return !string.IsNullOrEmpty(fullPath) &&
             ProjectHelper.IsSupportedProject(fullPath) &&
             !ProjectHelper.HasNuspecFile(fullPath);
       }
 
-      public static IEnumerable<string> ValidItem(this IEnumerable<string> items)
+      public static IEnumerable<string> ValidProjectForDependencyCollection(this IEnumerable<string> items)
       {
          return items
-            .Where(fullPath => ValidItem(fullPath));
+            .Where(fullPath => ValidProjectForDependencyCollection(fullPath));
       }
 
-      public static bool NuspecItem(ITaskItem item)
+      public static bool ValidReferenceLibraryForNuSource(ITaskItem libraryReference)
       {
-         return NuspecItem(item.GetMetadata("FullPath"));
+         return !ValidProjectForNuBuildDependencyCollection(libraryReference.GetMetadata("MSBuildSourceProjectFile"));
       }
 
-      public static bool NuspecItem(string fullPath)
+      public static IEnumerable<ITaskItem> ValidReferenceLibraryForNuSource(this IEnumerable<ITaskItem> libraryReferences)
+      {
+         return libraryReferences
+            .Where(libraryReference => ValidReferenceLibraryForNuSource(libraryReference));
+      }
+
+      public static bool ValidReferenceLibraryForPropertyProvider(ITaskItem libraryReference)
+      {
+         var copyLocal = libraryReference.GetMetadata("Private");
+         return (String.IsNullOrEmpty(copyLocal) || String.Compare(copyLocal, "false", true) != 0);
+      }
+
+      public static IEnumerable<ITaskItem> ValidReferenceLibraryForPropertyProvider(this IEnumerable<ITaskItem> libraryReferences)
+      {
+         return libraryReferences
+            .Where(libraryReference => ValidReferenceLibraryForPropertyProvider(libraryReference));
+      }
+
+      public static bool ValidProjectForNuBuildDependencyCollection(string fullPath)
       {
          return HasNuspecFile(fullPath);
       }
 
-      public static IEnumerable<string> NuspecItem(this IEnumerable<string> items)
+      public static IEnumerable<string> ValidProjectForNuBuildDependencyCollection(this IEnumerable<string> items)
       {
          return items
-            .Where(fullPath => NuspecItem(fullPath));
+            .Where(fullPath => ValidProjectForNuBuildDependencyCollection(fullPath));
       }
 
       public static IEnumerable<string> UnappliedItem(this IEnumerable<string> items, HashSet<string> alreadyAppliedProjects)
