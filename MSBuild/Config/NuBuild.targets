@@ -108,11 +108,9 @@
       <ItemGroup>
          <NuSources Include="$(MSBuildProjectFile);"/>
       </ItemGroup>
-      <ItemGroup>
-         <NuTargets Include="@(CopyToOutputDirectoryItems->'$(OutDir)%(TargetPath)');"/>
-      </ItemGroup>
-      <Message Text="NuSources: @(NuSources)"/>
-      <Message Text="NuTargets: @(NuTargets)"/>
+      <Message Text="NuPrepared: @(NuPrepared)"/>
+      <Message Text="NuSources:  @(NuSources)"/>
+      <Message Text="NuTargets:  @(NuTargets)"/>
    </Target>
    <!-- Target: PrepareClean
       . initializes the Compile build items, adding custom metadata
@@ -132,9 +130,10 @@
    <!-- Target: Clean 
       . removes all .nupkg files from the output path
    -->
-   <Target Name="Clean" DependsOnTargets="__PrepareClean;BeforeClean">
+   <Target Name="Clean" DependsOnTargets="__PrepareClean;BeforeClean;CoreClean;AfterClean">
+   </Target>
+   <Target Name="CoreClean">
       <Delete Files="@(NuTargets)"/>
-      <CallTarget Targets="AfterClean"/>
    </Target>
    <!-- Target: Build 
       . creates a .nupkg file for each .nuspec file in the project
@@ -143,7 +142,7 @@
            DependsOnTargets="__PrepareBuild;BeforeBuild;CoreBuild;AfterBuild" >
    </Target>
    <Target Name="CoreBuild"
-           DependsOnTargets="PreBuildEvent;NuPackage;PostBuildEvent" >
+           DependsOnTargets="PreBuildEvent;NuPackage;__CopySourceItemsToOutputDirectory;PostBuildEvent" >
       <OnError ExecuteTargets="PostBuildEvent" Condition="'$(RunPostBuildEvent)'=='Always' or '$(RunPostBuildEvent)'=='OnOutputUpdated'"/>
    </Target>
    <Target Name="PreBuildEvent"
@@ -167,7 +166,6 @@
                  AddExecutablesToLibFolder="$(NuBuildAddExecutablesToLibFolder)"
                  IncludePdbs="$(NuBuildIncludePdbs)"/>
       <Message Text="%(NuPrepared.Filename) -> %(NuPrepared.NuPackagePath)" Importance="high"/>
-      <CallTarget Targets="__CopySourceItemsToOutputDirectory"/>
    </Target>
    <Target Name="PostBuildEvent"
            Condition="'$(PostBuildEvent)' != '' and '$(RunPostBuildEvent)' != 'OnOutputUpdated'" >
