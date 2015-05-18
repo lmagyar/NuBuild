@@ -78,11 +78,6 @@ namespace NuBuild.MSBuild
       [Required]
       public String OutputPath { get; set; }
       /// <summary>
-      /// The project intermediate output directory path
-      /// </summary>
-      [Required]
-      public String IntermediateOutputPath { get; set; }
-      /// <summary>
       /// The project build number, or 0 to generate for auto-versioning
       /// </summary>
       public Int32 BuildNumber { get; set; }
@@ -128,34 +123,38 @@ namespace NuBuild.MSBuild
             // parepare the task for execution
             if (this.ReferenceLibraries == null)
                this.ReferenceLibraries = new ITaskItem[0];
-            this.OutputPath = Path.GetFullPath(this.OutputPath);
+            if (!Path.IsPathRooted(this.OutputPath))
+               this.OutputPath = Path.GetFullPath(this.OutputPath);
             propertyProvider = new PropertyProvider(ProjectPath, this.ReferenceLibraries
-               .ValidReferenceLibraryForNuSource()
+               .ValidReferenceLibraryForBinaryNuSource()
                .ValidReferenceLibraryForPropertyProvider()
                .ToArray());
-            Directory.CreateDirectory(this.OutputPath);
-            // add build dependencies from the nuspec file(s)
-            // and the list of project references
+
+            // add binary and NuBuild build dependencies to the list of sources
             this.sourceList.AddRange(this.ReferenceLibraries
-               .ValidReferenceLibraryForNuSource());
+               .ValidReferenceLibraryForBinaryNuSource());
+            this.sourceList.AddRange(this.ReferenceLibraries
+               .ValidReferenceLibraryForNuBuildNuSource()
+               .Select(referenceLibrary => new TaskItem(ProjectHelper.GetNupkgsFullPath(
+                  referenceLibrary.MSBuildSourceProjectFile(), Path.GetDirectoryName(referenceLibrary.FullPath())))));
+            // add build dependencies from the embedded resource file(s)
+            this.sourceList.AddRange(this.Embedded);
+            
             // parse the version source name
             this.versionSource = (VersionSource)Enum.Parse(
                typeof(VersionSource), 
                this.VersionSource, 
                true
             );
-            // configure each nuspec item
+            // configure each nuspec item (NuPackage will use the metadata added now)
+            // it also adds the referred files in .nuspec files to the sources
+            // and certainly adds the .nuspec files to sources and the .nupkg files to targets
             foreach (var specItem in this.NuSpec)
                PreparePackage(specItem);
-            // add build dependencies from the embedded resource file(s)
-            this.sourceList.AddRange(this.Embedded);
-            // write out .nupkgs intermediate file
-            // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
-            var nupkgsFullPath = ProjectHelper.GetNupkgsFullPath(ProjectPath, IntermediateOutputPath);
-            var nupkgsDirectory = Path.GetDirectoryName(nupkgsFullPath);
-            if (!Directory.Exists(nupkgsDirectory))
-               Directory.CreateDirectory(nupkgsDirectory);
-            System.IO.File.WriteAllLines(nupkgsFullPath, this.targetList.Select(ti => ti.GetMetadata("FullPath")), System.Text.Encoding.UTF8);
+            // add intermediate .nupkgs file to targets
+            var nupkgsFullPath = ProjectHelper.GetNupkgsFullPath(ProjectPath, OutputPath);
+            this.targetList.Add(new TaskItem(nupkgsFullPath));
+            
             // return the list of build sources/targets
             this.Prepared = this.preparedList.ToArray();
             this.Sources = this.sourceList.ToArray();
@@ -324,7 +323,7 @@ namespace NuBuild.MSBuild
          //   file
          // . return the version of the first file with a version
          return this.ReferenceLibraries
-            .ValidReferenceLibraryForNuSource()
+            .ValidReferenceLibraryForBinaryNuSource()
             .Select(i => i.GetMetadata("FullPath"))
             .Concat(
                fileElems.Select(

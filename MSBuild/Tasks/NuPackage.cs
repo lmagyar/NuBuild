@@ -124,6 +124,10 @@ namespace NuBuild.MSBuild
          {
             Debug.WriteLine("\n=== NuPackage on {0} ===", (object)Path.GetFileName(ProjectPath));
 
+            // we must check the tool version that used to edit the NuBuild project,
+            // if that is higher than the current, than there is a good chance that a new feature is used
+            // in that case we can't build the packages with an older NuBuild framework
+            // this is usefull with multiple developers and/or CI/TFS server
             string assemblyInformationalVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
             SemanticVersion semanticToolVersionInProject;
             if (SemanticVersion.TryParse(ToolVersion, out semanticToolVersionInProject)
@@ -139,12 +143,27 @@ namespace NuBuild.MSBuild
                this.ReferenceProjects = new ITaskItem[0];
             if (this.ReferenceLibraries == null)
                this.ReferenceLibraries = new ITaskItem[0];
-            this.OutputPath = Path.GetFullPath(this.OutputPath);
+            if (!Path.IsPathRooted(this.OutputPath))
+               this.OutputPath = Path.GetFullPath(this.OutputPath);
+            if (!Directory.Exists(this.OutputPath))
+               Directory.CreateDirectory(this.OutputPath);
             propertyProvider = new PropertyProvider(ProjectPath, this.ReferenceLibraries
-               .ValidReferenceLibraryForNuSource()
+               .ValidReferenceLibraryForBinaryNuSource()
                .ValidReferenceLibraryForPropertyProvider()
                .ToArray());
-            // compile the nuget package
+
+            // remove previous outputs (.nupkg and .nupkgs files)
+            var nupkgsFullPath = ProjectHelper.GetNupkgsFullPath(ProjectPath, OutputPath);
+            if (File.Exists(nupkgsFullPath))
+            {
+               foreach (var pkgPath in System.IO.File.ReadAllLines(nupkgsFullPath))
+                  if (File.Exists(pkgPath))
+                     File.Delete(pkgPath);
+               File.Delete(nupkgsFullPath);
+            }
+            // write out the new .nupkgs intermediate file
+            System.IO.File.WriteAllLines(nupkgsFullPath, this.NuSpec.Select(ti => ti.GetMetadata("NuPackagePath")), System.Text.Encoding.UTF8);
+            // compile the nuget packages
             foreach (var specItem in this.NuSpec)
                BuildPackage(specItem);
          }
@@ -200,7 +219,7 @@ namespace NuBuild.MSBuild
       private void AddDependencies(NuGet.PackageBuilder builder)
       {
          var dependencyManager = new DependencyManager(TargetFrameworkMoniker, AddBinariesToSubfolder, LimitMajorVersionOfDependencies, Log);
-         dependencyManager.CalculateMinimalSet(this.ReferenceProjects, builder);
+         dependencyManager.CalculateMinimalSet(this.ReferenceProjects, this.ReferenceLibraries, builder);
 
          foreach (var fr in dependencyManager.FrameworkReferences)
             if (builder.FrameworkReferences.Any(_fr => string.Compare(_fr.AssemblyName, fr.AssemblyName, true) == 0))
@@ -230,7 +249,7 @@ namespace NuBuild.MSBuild
          // . folders may be overridden using NuBuildTargetFolder metadata (lib\net40, etc.)
          // . folders may be overridden using TargetFramework attribute (lib\net40, etc.)
          foreach (var libItem in this.ReferenceLibraries
-            .ValidReferenceLibraryForNuSource())
+            .ValidReferenceLibraryForBinaryNuSource())
          {
             //AddFile(builder, libItem.GetMetadata("FullPath"), libItem.GetMetadata("NuBuildTargetFolder"));
             var srcPath = libItem.GetMetadata("FullPath"); ;
