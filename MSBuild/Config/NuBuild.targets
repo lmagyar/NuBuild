@@ -93,15 +93,6 @@
          ShouldUnsetParentConfigurationAndPlatform = "false" >
          <Output TaskParameter="AssignedProjects" ItemName="ProjectReferenceWithConfiguration"/>
       </AssignProjectConfiguration>
-      <!-- MSBuild (even 12.0) on TFS can't determine the project build order from ProjectReference items,
-           we have to build them manually -->
-      <MSBuild
-         Projects="@(ProjectReferenceWithConfiguration)"
-         Properties="%(ProjectReferenceWithConfiguration.SetConfiguration); %(ProjectReferenceWithConfiguration.SetPlatform)"
-         Targets="Build"
-         BuildInParallel="$(BuildInParallel)">
-      </MSBuild>
-      <!-- this has different TargetOutputs than the normal Build target above -->
       <MSBuild
          Projects="@(ProjectReferenceWithConfiguration)"
          Properties="%(ProjectReferenceWithConfiguration.SetConfiguration); %(ProjectReferenceWithConfiguration.SetPlatform)"
@@ -168,6 +159,15 @@
    <Target Name="NuPackage"
            Inputs="@(NuSources)"
            Outputs="@(NuTargets)">
+      <!-- MSBuild (even 12.0) on TFS can't determine the project build order from ProjectReference items,
+           we have to build them manually -->
+      <MSBuild
+         Condition=" '$(BuildingInsideVisualStudio)' != 'true' "
+         Projects="@(ProjectReferenceWithConfiguration)"
+         Properties="%(ProjectReferenceWithConfiguration.SetConfiguration); %(ProjectReferenceWithConfiguration.SetPlatform)"
+         Targets="Build"
+         BuildInParallel="$(BuildInParallel)">
+      </MSBuild>
       <NuPackage
          ProjectPath="$(MSBuildProjectFullPath)"
          TargetFrameworkMoniker="$(TargetFrameworkMoniker)"
