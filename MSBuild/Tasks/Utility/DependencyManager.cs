@@ -54,8 +54,8 @@ namespace NuBuild.MSBuild
       protected Boolean limitMajorVersionOfDependencies;
       protected TaskLoggingHelper log;
 
-      protected HashSet<ProjectFactory> referenceProjectFactories;
-      protected HashSet<ProjectFactory> nuBuildReferenceProjectFactories;
+      protected HashSet<BinaryReferenceProjectFactory> binaryReferenceProjectFactories;
+      protected HashSet<NuBuildReferenceProjectFactory> nuBuildReferenceProjectFactories;
       protected HashSet<FrameworkName> targetFrameworks;
       protected Dictionary<FrameworkName, HashSet<String>> frameworkAssembliesByFramework;
       protected Dictionary<FrameworkName, Dictionary<String, Tuple<IPackage, PackageDependency>>> packagesAndDependenciesByFramework;
@@ -74,10 +74,10 @@ namespace NuBuild.MSBuild
       public Collection<FrameworkAssemblyReference> FrameworkReferences { get { return frameworkReferences; } }
       public Collection<PackageDependencySet> DependencySets { get { return dependencySets; } }
 
-      public void CalculateMinimalSet(ITaskItem[] referenceProjects, PackageBuilder builder)
+      public void CalculateMinimalSet(ITaskItem[] referenceProjects, ITaskItem[] referenceLibraries, PackageBuilder builder)
       {
          InitializeVariables();
-         LoadReferences(referenceProjects);
+         LoadReferences(referenceProjects, referenceLibraries);
          ProcessReferenceInformation();
          CompactReferenceInformation(builder);
          ReorganizeResults();
@@ -87,28 +87,27 @@ namespace NuBuild.MSBuild
       protected void InitializeVariables()
       {
          ProjectFactoryEqualityComparer projectFactoryEqualityComparer = new ProjectFactoryEqualityComparer();
-         referenceProjectFactories = new HashSet<ProjectFactory>(projectFactoryEqualityComparer);
-         nuBuildReferenceProjectFactories = new HashSet<ProjectFactory>(projectFactoryEqualityComparer);
+         binaryReferenceProjectFactories = new HashSet<BinaryReferenceProjectFactory>(projectFactoryEqualityComparer);
+         nuBuildReferenceProjectFactories = new HashSet<NuBuildReferenceProjectFactory>(projectFactoryEqualityComparer);
          targetFrameworks = new HashSet<FrameworkName>();
          frameworkAssembliesByFramework = new Dictionary<FrameworkName, HashSet<String>>();
          packagesAndDependenciesByFramework = new Dictionary<FrameworkName, Dictionary<String, Tuple<IPackage, PackageDependency>>>();
       }
 
-      protected void LoadReferences(ITaskItem[] referenceProjects)
+      protected void LoadReferences(ITaskItem[] referenceProjects, ITaskItem[] referenceLibraries)
       {
          // collecting reference information to variables
-         foreach (var prjPath in referenceProjects
-            .FullPath()
+         foreach (var referenceProject in referenceProjects
             .ValidProjectForDependencyCollection())
          {
-            var prjFactory = new ProjectFactory(prjPath);
-            prjFactory.CollectDependencies(referenceProjectFactories,
+            var prjFactory = new BinaryReferenceProjectFactory(referenceProject);
+            prjFactory.CollectDependencies(binaryReferenceProjectFactories,
                targetFrameworks, frameworkAssembliesByFramework, packagesAndDependenciesByFramework);
 
             // debug info after each collection
             Debug.WriteLine("\n--- Project: {0} | {1} ---", prjFactory.TargetFramework, Path.GetDirectoryName(prjFactory.FullPath));
             Debug.WriteLine("referenceProjectFactories after CollectDependencies");
-            Print(referenceProjectFactories);
+            Print(binaryReferenceProjectFactories);
             Debug.WriteLine("frameworkAssemblies after CollectDependencies");
             Print(frameworkAssembliesByFramework);
             Debug.WriteLine("packagesAndDependencies after CollectDependencies");
@@ -125,11 +124,10 @@ namespace NuBuild.MSBuild
                new Dictionary<string, Tuple<IPackage, PackageDependency>>());
          }
          // collecting nubuild reference information to variables
-         foreach (var prjPath in referenceProjects
-            .FullPath()
+         foreach (var referenceProject in referenceProjects
             .ValidProjectForNuBuildDependencyCollection())
          {
-            var prjFactory = new ProjectFactory(prjPath);
+            var prjFactory = new NuBuildReferenceProjectFactory(referenceProject, referenceLibraries);
             prjFactory.CollectNuBuildDependencies(nuBuildReferenceProjectFactories);
 
             // debug info after each collection
@@ -291,10 +289,23 @@ namespace NuBuild.MSBuild
       #region Printing DEBUG info
 
       [Conditional("DEBUG")]
-      private void Print(HashSet<ProjectFactory> referenceProjectFactories)
+      private void Print(HashSet<BinaryReferenceProjectFactory> referenceProjectFactories)
       {
          foreach (var referenceProjectFactory in referenceProjectFactories)
-            Debug.WriteLine(" {0} | {1}", referenceProjectFactory.TargetFramework, Path.GetFileName(referenceProjectFactory.FullPath));
+            Print(referenceProjectFactory);
+      }
+
+      [Conditional("DEBUG")]
+      private void Print(HashSet<NuBuildReferenceProjectFactory> referenceProjectFactories)
+      {
+         foreach (var referenceProjectFactory in referenceProjectFactories)
+            Print(referenceProjectFactory);
+      }
+
+      [Conditional("DEBUG")]
+      private void Print(ProjectFactory referenceProjectFactory)
+      {
+         Debug.WriteLine(" {0} | {1}", referenceProjectFactory.TargetFramework, Path.GetFileName(referenceProjectFactory.FullPath));
       }
 
       [Conditional("DEBUG")]

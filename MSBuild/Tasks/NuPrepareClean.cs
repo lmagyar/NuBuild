@@ -49,10 +49,10 @@ namespace NuBuild.MSBuild
       [Required]
       public String ProjectPath { get; set; }
       /// <summary>
-      /// The project intermediate output directory path
+      /// The project output directory path
       /// </summary>
       [Required]
-      public String IntermediateOutputPath { get; set; }
+      public String OutputPath { get; set; }
       /// <summary>
       /// Return the list of build target files via here
       /// </summary>
@@ -71,10 +71,14 @@ namespace NuBuild.MSBuild
       {
          try
          {
+            // parepare the task for execution
+            if (!Path.IsPathRooted(this.OutputPath))
+               this.OutputPath = Path.GetFullPath(this.OutputPath);
+
             // read in .nupkgs intermediate file
             // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
             // and we can read it back for clean targets
-            var nupkgsFullPath = ProjectHelper.GetNupkgsFullPath(ProjectPath, IntermediateOutputPath);
+            var nupkgsFullPath = ProjectHelper.GetNupkgsFullPath(ProjectPath, OutputPath);
             if (File.Exists(nupkgsFullPath))
             {
                this.targetList.AddRange(System.IO.File.ReadAllLines(nupkgsFullPath)
@@ -82,6 +86,7 @@ namespace NuBuild.MSBuild
                   .Select(pkgPath => new TaskItem(pkgPath)));
                this.targetList.Add(new TaskItem(nupkgsFullPath));
             }
+            
             // return the list of clean targets
             this.Targets = this.targetList.ToArray();
          }

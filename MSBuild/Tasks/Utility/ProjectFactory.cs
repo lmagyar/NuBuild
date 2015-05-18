@@ -28,6 +28,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.Build.Evaluation;
+using Microsoft.Build.Framework;
 using NuGet;
 // Project References
 
@@ -46,30 +47,35 @@ namespace NuBuild.MSBuild
       }
    }
 
-   public class ProjectFactory
+   public abstract class ProjectFactory
    {
-      private readonly Project project;
-      private ISettings settings;
+      protected readonly Project project;
 
-      private const string ContentItemType = "Content";
-      private const string NoneItemType = "None";
-      private const string ProjectReferenceItemType = "ProjectReference";
-      private const string ReferenceItemType = "Reference";
-      private const string PackagesFolder = "packages";
+      protected ProjectFactory(ITaskItem referenceProject)
+         : this(GetProject(referenceProject))
+      { }
 
-      public ProjectFactory(string path)
-         : this(ProjectCollection
+      private static Project GetProject(ITaskItem referenceProject)
+      {
+         var fullPath = referenceProject.FullPath();
+         var project = ProjectCollection
             .GlobalProjectCollection
             .LoadedProjects
-            .Where(p => StringComparer.OrdinalIgnoreCase.Compare(p.FullPath, path) == 0)
-            .FirstOrDefault()
-            ?? new Project(path)) 
-      { }
+            .Where(p => StringComparer.OrdinalIgnoreCase.Compare(p.FullPath, fullPath) == 0)
+            .FirstOrDefault();
+         if (project == null)
+            project = new Project(
+               fullPath,
+               new Dictionary<string, string>(2) {
+                  { "Configuration", referenceProject.GetMetadata("Configuration") },
+                  { "Platform", referenceProject.GetMetadata("Platform") } },
+               null);
+         return project;
+      }
 
       private ProjectFactory(Project project)
       {
          this.project = project;
-         this.settings = null;
 
          var targetFrameworkMoniker = project.GetPropertyValue("TargetFrameworkMoniker");
          if (!String.IsNullOrEmpty(targetFrameworkMoniker))
@@ -84,55 +90,12 @@ namespace NuBuild.MSBuild
          }
       }
 
-      private string targetPath;
-      public string TargetPath
+      public string DirectoryPath
       {
          get
          {
-            if (string.IsNullOrEmpty(targetPath))
-            {
-               var resolvedTargetPath = ResolveTargetPath();
-               if (!File.Exists(resolvedTargetPath))
-                  throw new InvalidOperationException(
-                     string.Format("Unable to find build output '{0}', make sure the project is referred.", resolvedTargetPath));
-               targetPath = resolvedTargetPath;
-            }
-            return targetPath;
+            return project.DirectoryPath;
          }
-      }
-
-      private string ResolveTargetPath()
-      {
-         // Re-evaluate the project so that the new property values are applied
-         project.ReevaluateIfNecessary();
-
-         // Return the new target path
-         return project.GetPropertyValue("TargetPath");
-      }
-
-      private IEnumerable<string> nuTargets;
-      public IEnumerable<string> NuTargets
-      {
-         get
-         {
-            if (nuTargets == null)
-            {
-               var resolvedNuTargets = ResolveNuTargets();
-               foreach (var resolvedNuTarget in resolvedNuTargets)
-                  if (!File.Exists(resolvedNuTarget))
-                     throw new InvalidOperationException(
-                        string.Format("Unable to find build output '{0}', make sure the project is referred.", resolvedNuTarget));
-               nuTargets = resolvedNuTargets;
-            }
-            return nuTargets;
-         }
-      }
-
-      private IEnumerable<string> ResolveNuTargets()
-      {
-         // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
-         return System.IO.File.ReadAllLines(ProjectHelper.GetNupkgsFullPath(project))
-            .AsEnumerable();
       }
 
       public FrameworkName TargetFramework
@@ -140,58 +103,22 @@ namespace NuBuild.MSBuild
          get;
          private set;
       }
+   }
 
-      private ISettings DefaultSettings
-      {
-         get
-         {
-            if (null == settings)
-               settings = Settings.LoadDefaultSettings(new PhysicalFileSystem(project.DirectoryPath), null, null);
-            return settings;
-         }
-      }
+   public class BinaryReferenceProjectFactory : ProjectFactory
+   {
+      private ISettings settings;
 
-      private string SolutionDir
-      {
-         get
-         {
-            return ProjectHelper.GetSolutionDir(project.DirectoryPath);
-         }
-      }
+      private const string ContentItemType = "Content";
+      private const string NoneItemType = "None";
+      private const string ProjectReferenceItemType = "ProjectReference";
+      private const string ReferenceItemType = "Reference";
+      private const string PackagesFolder = "packages";
 
-      private string RepositoryPath
+      public BinaryReferenceProjectFactory(ITaskItem referenceProject)
+         : base (referenceProject)
       {
-         get
-         {
-            return DefaultSettings.GetRepositoryPath();
-         }
-      }
-      
-      private IEnumerable<string> GetReferencesIdentity()
-      {
-         var defaultReferences = ProjectHelper.GetDefaultReferences(project.FullPath);
-         return project
-            .GetItems(ReferenceItemType)
-            .Where(item =>
-            {
-               var identity = item.GetMetadataValue("Identity");
-               if (defaultReferences.Any(reference => string.Compare(reference, identity, true) == 0))
-                  return false;
-               var copyLocal = item.GetMetadataValue("Private");
-               if (string.IsNullOrEmpty(copyLocal))
-                  return GacApi.AssemblyExist(identity);
-               else
-                  return string.Compare(copyLocal, "false", true) == 0;
-            })
-            .Select(item => item.GetMetadataValue("Identity"));
-      }
-
-      private string GetPackageReferenceFilePath()
-      {
-         return project
-            .GetItems(ContentItemType, NoneItemType)
-            .Select(item => item.GetMetadataValue("FullPath"))
-            .FirstOrDefault(file => Path.GetFileName(file).Equals(Constants.PackageReferenceFile, StringComparison.OrdinalIgnoreCase));
+         this.settings = null;
       }
 
       /// <summary>
@@ -203,7 +130,7 @@ namespace NuBuild.MSBuild
       /// <param name="frameworkAssembliesByFramework">Collects all framework assembly references by framework here.</param>
       /// <param name="packagesAndDependenciesByFramework">Collects all package references by framework here.</param>
       public void CollectDependencies(
-         HashSet<ProjectFactory> referenceProjectFactories,
+         HashSet<BinaryReferenceProjectFactory> binaryReferenceProjectFactories,
          HashSet<FrameworkName> targetFrameworks,
          Dictionary<FrameworkName, HashSet<string>> frameworkAssembliesByFramework,
          Dictionary<FrameworkName, Dictionary<string, Tuple<IPackage, PackageDependency>>> packagesAndDependenciesByFramework)
@@ -224,21 +151,15 @@ namespace NuBuild.MSBuild
             packagesAndDependencies = packagesAndDependenciesByFramework[TargetFramework];
          }
 
-         AddDependencies(referenceProjectFactories, frameworkAssemblies, packagesAndDependencies);
-      }
-
-      public void CollectNuBuildDependencies(
-         HashSet<ProjectFactory> nuBuildReferenceProjectFactories)
-      {
-         AddNuBuildDependencies(nuBuildReferenceProjectFactories);
+         AddDependencies(binaryReferenceProjectFactories, frameworkAssemblies, packagesAndDependencies);
       }
 
       private void AddDependencies(
-         HashSet<ProjectFactory> referenceProjectFactories,
+         HashSet<BinaryReferenceProjectFactory> binaryReferenceProjectFactories,
          HashSet<string> frameworkAssemblies,
          Dictionary<string, Tuple<IPackage, PackageDependency>> packagesAndDependencies)
       {
-         referenceProjectFactories.Add(this);
+         binaryReferenceProjectFactories.Add(this);
 
          foreach (var reference in GetReferencesIdentity())
             frameworkAssemblies.Add(reference);
@@ -268,9 +189,57 @@ namespace NuBuild.MSBuild
          }
       }
 
-      private void AddNuBuildDependencies(HashSet<ProjectFactory> nuBuildReferenceProjectFactories)
+      private ISettings DefaultSettings
       {
-         nuBuildReferenceProjectFactories.Add(this);
+         get
+         {
+            if (null == settings)
+               settings = Settings.LoadDefaultSettings(new PhysicalFileSystem(DirectoryPath), null, null);
+            return settings;
+         }
+      }
+
+      private string RepositoryPath
+      {
+         get
+         {
+            return DefaultSettings.GetRepositoryPath();
+         }
+      }
+
+      private string SolutionDir
+      {
+         get
+         {
+            return ProjectHelper.GetSolutionDir(DirectoryPath);
+         }
+      }
+
+      private IEnumerable<string> GetReferencesIdentity()
+      {
+         var defaultReferences = ProjectHelper.GetDefaultReferences(FullPath);
+         return project
+            .GetItems(ReferenceItemType)
+            .Where(item =>
+            {
+               var identity = item.GetMetadataValue("Identity");
+               if (defaultReferences.Any(reference => string.Compare(reference, identity, true) == 0))
+                  return false;
+               var copyLocal = item.GetMetadataValue("Private");
+               if (string.IsNullOrEmpty(copyLocal))
+                  return GacApi.AssemblyExist(identity);
+               else
+                  return string.Compare(copyLocal, "false", true) == 0;
+            })
+            .Select(item => item.GetMetadataValue("Identity"));
+      }
+
+      private string GetPackageReferenceFilePath()
+      {
+         return project
+            .GetItems(ContentItemType, NoneItemType)
+            .Select(item => item.GetMetadataValue("FullPath"))
+            .FirstOrDefault(file => Path.GetFileName(file).Equals(Constants.PackageReferenceFile, StringComparison.OrdinalIgnoreCase));
       }
 
       private static IVersionSpec GetVersionConstraint(IDictionary<PackageName, PackageReference> packageReferences, IPackage package)
@@ -341,6 +310,60 @@ namespace NuBuild.MSBuild
          { }
 
          return null;
+      }
+   }
+
+   public class NuBuildReferenceProjectFactory : ProjectFactory
+   {
+      public NuBuildReferenceProjectFactory(ITaskItem referenceProject, ITaskItem[] referenceLibraries)
+         : base(referenceProject)
+      {
+         TargetDir = referenceLibraries
+            .Where(referenceLibrary => referenceLibrary.MSBuildSourceProjectFile() == referenceProject.FullPath())
+            .Select(referenceLibrary => Path.GetDirectoryName(referenceLibrary.FullPath()) + Path.DirectorySeparatorChar)
+            .First();
+      }
+
+      public string TargetDir
+      {
+         get;
+         private set;
+      }
+
+      private IEnumerable<string> nuTargets;
+      public IEnumerable<string> NuTargets
+      {
+         get
+         {
+            if (nuTargets == null)
+            {
+               var resolvedNuTargets = ResolveNuTargets();
+               foreach (var resolvedNuTarget in resolvedNuTargets)
+                  if (!File.Exists(resolvedNuTarget))
+                     throw new InvalidOperationException(
+                        string.Format("Unable to find build output '{0}', make sure the project is built.", resolvedNuTarget));
+               nuTargets = resolvedNuTargets;
+            }
+            return nuTargets;
+         }
+      }
+
+      private IEnumerable<string> ResolveNuTargets()
+      {
+         // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
+         return System.IO.File.ReadAllLines(ProjectHelper.GetNupkgsFullPath(FullPath, TargetDir))
+            .AsEnumerable();
+      }
+
+      public void CollectNuBuildDependencies(
+         HashSet<NuBuildReferenceProjectFactory> nuBuildReferenceProjectFactories)
+      {
+         AddNuBuildDependencies(nuBuildReferenceProjectFactories);
+      }
+
+      private void AddNuBuildDependencies(HashSet<NuBuildReferenceProjectFactory> nuBuildReferenceProjectFactories)
+      {
+         nuBuildReferenceProjectFactories.Add(this);
       }
    }
 }
