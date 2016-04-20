@@ -21,5 +21,5 @@
 // System References
 using System.Reflection;
 // Project References
-[assembly:AssemblyVersion("2.4.6.0")]
-[assembly:AssemblyInformationalVersion("2.4.6")]
+[assembly:AssemblyVersion("2.4.7.0")]
+[assembly:AssemblyInformationalVersion("2.4.7")]
