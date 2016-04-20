@@ -214,6 +214,9 @@
       <Link>Resources\NuBuild.png</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="[Content_Types].xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="source.extension.vsixmanifest" />
     <EmbeddedResource Include="..\ProjectTemplate\NuProj\NuProj.ico">
       <Link>Resources\NuProj.ico</Link>

@@ -41,3 +41,7 @@ The .vsix version is below (for documentation purposes only):
       </Feature>
    </Fragment>
 </Wix>
+
+There is a hack under Win8+ The "devenv /updateconfiguration" that is used instead of "/setup" to speed up installation, doesn't install package under VS
+under Win8+ But when the "[Content_Types].xml" file from the .vsix is copied to Common7\IDE\Extensions\NuBuild\v2, it works. This file is generated during the
+.vsix build and doesn't copied to the output dir, even if CopyVsixExtensionFiles is turned on. So this got part of the Package project.

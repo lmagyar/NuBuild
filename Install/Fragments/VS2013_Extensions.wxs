@@ -27,6 +27,9 @@
                   <Component Id="VS2013_Extension_vsixmanifest" Guid="8F57693D-37A6-4209-9990-F749CAE3EEC4">
                      <File Id="VS2013_Extension_vsixmanifest" Source="..\Bin\VSIX\extension.vsixmanifest" KeyPath="yes"/>
                   </Component>
+                  <Component Id="VS2013_Content_Types_xml" Guid="10B268BC-990A-4424-835C-D2EF9CC6EC9B">
+                     <File Id="VS2013_Content_Types_xml" Source="..\Bin\[Content_Types].xml" KeyPath="yes"/>
+                  </Component>
                   <Directory Id="VS2013ExtNuBuildV2ResourcesFolder" Name="Resources">
                      <Component Id="VS2013_license_txt" Guid="45BAC244-02D0-4F2D-8A22-0991EBA1C858">
                         <File Id="VS2013_license_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
@@ -57,6 +60,7 @@
          <ComponentRef Id="VS2013_NuBuild_VS_Package_dll"/>
          <ComponentRef Id="VS2013_NuBuild_VS_Package_pkgdef"/>
          <ComponentRef Id="VS2013_Extension_vsixmanifest"/>
+         <ComponentRef Id="VS2013_Content_Types_xml"/>
          <ComponentRef Id="VS2013_license_txt"/>
          <ComponentRef Id="VS2013_NuBuild_png"/>
          <ComponentRef Id="VS2013_NuProj_zip"/>

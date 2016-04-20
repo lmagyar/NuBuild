@@ -27,6 +27,9 @@
                   <Component Id="VS14_Extension_vsixmanifest" Guid="0C2CE35A-2CF0-487B-9E7A-E68A39D2D34C">
                      <File Id="VS14_Extension_vsixmanifest" Source="..\Bin\VSIX\extension.vsixmanifest" KeyPath="yes"/>
                   </Component>
+                  <Component Id="VS14_Content_Types_xml" Guid="1CEE2140-8B48-4098-A566-64C2FB5E7C73">
+                     <File Id="VS14_Content_Types_xml" Source="..\Bin\[Content_Types].xml" KeyPath="yes"/>
+                  </Component>
                   <Directory Id="VS14ExtNuBuildV2ResourcesFolder" Name="Resources">
                      <Component Id="VS14_license_txt" Guid="1BF138D7-25AF-481D-82C2-613D990E6B3B">
                         <File Id="VS14_license_txt" Source="..\Bin\VSIX\Resources\license.txt" KeyPath="yes"/>
@@ -57,6 +60,7 @@
          <ComponentRef Id="VS14_NuBuild_VS_Package_dll"/>
          <ComponentRef Id="VS14_NuBuild_VS_Package_pkgdef"/>
          <ComponentRef Id="VS14_Extension_vsixmanifest"/>
+         <ComponentRef Id="VS14_Content_Types_xml"/>
          <ComponentRef Id="VS14_license_txt"/>
          <ComponentRef Id="VS14_NuBuild_png"/>
          <ComponentRef Id="VS14_NuProj_zip"/>
