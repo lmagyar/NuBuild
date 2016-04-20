@@ -39,19 +39,10 @@ namespace NuBuild.MSBuild
          this.packages = packages;
       }
 
-      public override string Source
-      {
-         get { return null; }
-      }
+      public override string Source => null;
 
-      public override bool SupportsPrereleasePackages
-      {
-         get { return true; }
-      }
+      public override bool SupportsPrereleasePackages => true;
 
-      public override IQueryable<IPackage> GetPackages()
-      {
-         return packages.AsQueryable();
-      }
+      public override IQueryable<IPackage> GetPackages() => packages.AsQueryable();
    }
 }

@@ -141,10 +141,8 @@ namespace NuBuild.VS
       /// <returns>
       /// The enumeration value corresponding to the description
       /// </returns>
-      public override TypeConverter.StandardValuesCollection GetStandardValues(
-         ITypeDescriptorContext context)
-      {
-         return new TypeConverter.StandardValuesCollection(
+      public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) =>
+         new TypeConverter.StandardValuesCollection(
             Enum
             .GetValues(typeof(EnumType))
             .Cast<EnumType>()
@@ -168,6 +166,5 @@ namespace NuBuild.VS
                return new EnumDescription(Convert.ToInt32(p), value, description);
             })
             .ToList());
-      }
    }
 }

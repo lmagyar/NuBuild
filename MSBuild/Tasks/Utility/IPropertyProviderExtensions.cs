@@ -47,10 +47,8 @@ namespace NuBuild.MSBuild
       /// <returns>
       /// Text with replaced tokens
       /// </returns>
-      public static string Process(this NuGet.IPropertyProvider propertyProvider, string text, bool throwIfNotFound = true)
-      {
-         return _tokenRegex.Replace(text, match => ReplaceToken(propertyProvider, match, throwIfNotFound));
-      }
+      public static string Process(this NuGet.IPropertyProvider propertyProvider, string text, bool throwIfNotFound = true) =>
+         _tokenRegex.Replace(text, match => ReplaceToken(propertyProvider, match, throwIfNotFound));
 
       /// <summary>
       /// Replaces tokens in parameter text
@@ -64,10 +62,8 @@ namespace NuBuild.MSBuild
       /// <returns>
       /// Text with replaced tokens
       /// </returns>
-      public static Stream Process(this NuGet.IPropertyProvider propertyProvider, Stream stream, bool throwIfNotFound = true)
-      {
-         return _tokenRegex.Replace(stream.ReadToEnd(), match => ReplaceToken(propertyProvider, match, throwIfNotFound)).AsStream();
-      }
+      public static Stream Process(this NuGet.IPropertyProvider propertyProvider, Stream stream, bool throwIfNotFound = true) =>
+         _tokenRegex.Replace(stream.ReadToEnd(), match => ReplaceToken(propertyProvider, match, throwIfNotFound)).AsStream();
 
       private static string ReplaceToken(this NuGet.IPropertyProvider propertyProvider, Match match, bool throwIfNotFound)
       {

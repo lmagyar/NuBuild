@@ -36,15 +36,9 @@ namespace NuBuild.MSBuild
 {
    public class ProjectFactoryEqualityComparer : IEqualityComparer<ProjectFactory>
    {
-      public bool Equals(ProjectFactory x, ProjectFactory y)
-      {
-         return x.FullPath == y.FullPath;
-      }
+      public bool Equals(ProjectFactory x, ProjectFactory y) => x.FullPath == y.FullPath;
 
-      public int GetHashCode(ProjectFactory obj)
-      {
-         return obj.FullPath.GetHashCode();
-      }
+      public int GetHashCode(ProjectFactory obj) => obj.FullPath.GetHashCode();
    }
 
    public abstract class ProjectFactory
@@ -82,26 +76,13 @@ namespace NuBuild.MSBuild
             TargetFramework = new FrameworkName(targetFrameworkMoniker);
       }
 
-      public string FullPath
-      {
-         get
-         {
-            return project.FullPath;
-         }
-      }
+      public string FullPath => project.FullPath;
 
-      public string DirectoryPath
-      {
-         get
-         {
-            return project.DirectoryPath;
-         }
-      }
+      public string DirectoryPath => project.DirectoryPath;
 
       public FrameworkName TargetFramework
       {
          get;
-         private set;
       }
    }
 
@@ -199,21 +180,9 @@ namespace NuBuild.MSBuild
          }
       }
 
-      private string RepositoryPath
-      {
-         get
-         {
-            return DefaultSettings.GetRepositoryPath();
-         }
-      }
+      private string RepositoryPath => DefaultSettings.GetRepositoryPath();
 
-      private string SolutionDir
-      {
-         get
-         {
-            return ProjectHelper.GetSolutionDir(DirectoryPath);
-         }
-      }
+      private string SolutionDir => ProjectHelper.GetSolutionDir(DirectoryPath);
 
       private IEnumerable<string> GetReferencesIdentity()
       {
@@ -234,13 +203,11 @@ namespace NuBuild.MSBuild
             .Select(item => item.GetMetadataValue("Identity"));
       }
 
-      private string GetPackageReferenceFilePath()
-      {
-         return project
+      private string GetPackageReferenceFilePath() =>
+         project
             .GetItems(ContentItemType, NoneItemType)
             .Select(item => item.GetMetadataValue("FullPath"))
             .FirstOrDefault(file => Path.GetFileName(file).Equals(Constants.PackageReferenceFile, StringComparison.OrdinalIgnoreCase));
-      }
 
       private static IVersionSpec GetVersionConstraint(IDictionary<PackageName, PackageReference> packageReferences, IPackage package)
       {
@@ -327,7 +294,6 @@ namespace NuBuild.MSBuild
       public string TargetDir
       {
          get;
-         private set;
       }
 
       private IEnumerable<string> nuTargets;
@@ -348,12 +314,10 @@ namespace NuBuild.MSBuild
          }
       }
 
-      private IEnumerable<string> ResolveNuTargets()
-      {
-         // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
-         return System.IO.File.ReadAllLines(ProjectHelper.GetNupkgsFullPath(FullPath, TargetDir))
+      // MsBuild can't cache these projects (no binary output), these reference information are stored in intermediate files
+      private IEnumerable<string> ResolveNuTargets() =>
+         System.IO.File.ReadAllLines(ProjectHelper.GetNupkgsFullPath(FullPath, TargetDir))
             .AsEnumerable();
-      }
 
       public void CollectNuBuildDependencies(
          HashSet<NuBuildReferenceProjectFactory> nuBuildReferenceProjectFactories)

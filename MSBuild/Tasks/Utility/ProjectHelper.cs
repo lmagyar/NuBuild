@@ -70,31 +70,21 @@ namespace NuBuild.MSBuild
          "System.Numerics",
       };
 
-      public static IEnumerable<ProjectItem> GetItems(this Project project, string itemType1, string itemType2)
-      {
-         return project.GetItems(itemType1).Concat(project.GetItems(itemType2));
-      }
+      public static IEnumerable<ProjectItem> GetItems(this Project project, string itemType1, string itemType2) =>
+         project.GetItems(itemType1).Concat(project.GetItems(itemType2));
 
-      public static string FullPath(this ITaskItem taskItem)
-      {
-         return taskItem.GetMetadata("FullPath");
-      }
+      public static string FullPath(this ITaskItem taskItem) =>
+         taskItem.GetMetadata("FullPath");
 
-      public static string MSBuildSourceProjectFile(this ITaskItem taskItem)
-      {
-         return taskItem.GetMetadata("MSBuildSourceProjectFile");
-      }
+      public static string MSBuildSourceProjectFile(this ITaskItem taskItem) =>
+         taskItem.GetMetadata("MSBuildSourceProjectFile");
 
-      public static bool ValidReferenceLibraryForBinaryNuSource(ITaskItem referenceLibrary)
-      {
-         return !ValidProjectForNuBuildDependencyCollection(referenceLibrary.MSBuildSourceProjectFile());
-      }
+      public static bool ValidReferenceLibraryForBinaryNuSource(ITaskItem referenceLibrary) =>
+         !ValidProjectForNuBuildDependencyCollection(referenceLibrary.MSBuildSourceProjectFile());
 
-      public static IEnumerable<ITaskItem> ValidReferenceLibraryForBinaryNuSource(this IEnumerable<ITaskItem> referenceLibraries)
-      {
-         return referenceLibraries
+      public static IEnumerable<ITaskItem> ValidReferenceLibraryForBinaryNuSource(this IEnumerable<ITaskItem> referenceLibraries) =>
+         referenceLibraries
             .Where(referenceLibrary => ValidReferenceLibraryForBinaryNuSource(referenceLibrary));
-      }
 
       public static bool ValidReferenceLibraryForPropertyProvider(ITaskItem referenceLibrary)
       {
@@ -102,68 +92,45 @@ namespace NuBuild.MSBuild
          return (String.IsNullOrEmpty(copyLocal) || String.Compare(copyLocal, "false", true) != 0);
       }
 
-      public static IEnumerable<ITaskItem> ValidReferenceLibraryForPropertyProvider(this IEnumerable<ITaskItem> referenceLibraries)
-      {
-         return referenceLibraries
+      public static IEnumerable<ITaskItem> ValidReferenceLibraryForPropertyProvider(this IEnumerable<ITaskItem> referenceLibraries) =>
+         referenceLibraries
             .Where(libraryReference => ValidReferenceLibraryForPropertyProvider(libraryReference));
-      }
 
-      public static bool ValidReferenceLibraryForNuBuildNuSource(ITaskItem referenceLibrary)
-      {
-         return ValidProjectForNuBuildDependencyCollection(referenceLibrary.MSBuildSourceProjectFile());
-      }
+      public static bool ValidReferenceLibraryForNuBuildNuSource(ITaskItem referenceLibrary) =>
+         ValidProjectForNuBuildDependencyCollection(referenceLibrary.MSBuildSourceProjectFile());
 
-      public static IEnumerable<ITaskItem> ValidReferenceLibraryForNuBuildNuSource(this IEnumerable<ITaskItem> referenceLibraries)
-      {
-         return referenceLibraries
+      public static IEnumerable<ITaskItem> ValidReferenceLibraryForNuBuildNuSource(this IEnumerable<ITaskItem> referenceLibraries) =>
+         referenceLibraries
             .Where(referenceLibrary => ValidReferenceLibraryForNuBuildNuSource(referenceLibrary));
-      }
 
-      public static bool ValidProjectForDependencyCollection(string projectFile)
-      {
-         return !string.IsNullOrEmpty(projectFile) &&
+      public static bool ValidProjectForDependencyCollection(string projectFile) =>
+         !string.IsNullOrEmpty(projectFile) &&
             ProjectHelper.IsSupportedProject(projectFile) &&
             !ProjectHelper.HasNuspecFile(projectFile);
-      }
 
-      public static bool ValidProjectForDependencyCollection(this ITaskItem referenceProject)
-      {
-         return ValidProjectForDependencyCollection(referenceProject.FullPath());
-      }
+      public static bool ValidProjectForDependencyCollection(this ITaskItem referenceProject) =>
+         ValidProjectForDependencyCollection(referenceProject.FullPath());
 
-      public static IEnumerable<ITaskItem> ValidProjectForDependencyCollection(this IEnumerable<ITaskItem> referenceProjects)
-      {
-         return referenceProjects
+      public static IEnumerable<ITaskItem> ValidProjectForDependencyCollection(this IEnumerable<ITaskItem> referenceProjects) =>
+         referenceProjects
             .Where(referenceProject => ValidProjectForDependencyCollection(referenceProject));
-      }
 
-      public static bool ValidProjectForNuBuildDependencyCollection(string projectFile)
-      {
-         return HasNuspecFile(projectFile);
-      }
+      public static bool ValidProjectForNuBuildDependencyCollection(string projectFile) =>
+         HasNuspecFile(projectFile);
 
-      public static bool ValidProjectForNuBuildDependencyCollection(this ITaskItem referenceProject)
-      {
-         return ValidProjectForNuBuildDependencyCollection(referenceProject.FullPath());
-      }
+      public static bool ValidProjectForNuBuildDependencyCollection(this ITaskItem referenceProject) =>
+         ValidProjectForNuBuildDependencyCollection(referenceProject.FullPath());
 
-      public static IEnumerable<ITaskItem> ValidProjectForNuBuildDependencyCollection(this IEnumerable<ITaskItem> referenceProjects)
-      {
-         return referenceProjects
+      public static IEnumerable<ITaskItem> ValidProjectForNuBuildDependencyCollection(this IEnumerable<ITaskItem> referenceProjects) =>
+         referenceProjects
             .Where(referenceProject => ValidProjectForNuBuildDependencyCollection(referenceProject));
-      }
 
-      public static IEnumerable<string> UnappliedItem(this IEnumerable<string> items, HashSet<string> alreadyAppliedProjects)
-      {
-         return items
+      public static IEnumerable<string> UnappliedItem(this IEnumerable<string> items, HashSet<string> alreadyAppliedProjects) =>
+         items
             .Where(fullPath => !alreadyAppliedProjects.Contains(fullPath));
-      }
-      
-      public static bool IsSupportedProject(string projectFile)
-      {
-         var extension = Path.GetExtension(projectFile);
-         return supportedProjectExtensions.Contains(extension);
-      }
+
+      public static bool IsSupportedProject(string projectFile) =>
+         supportedProjectExtensions.Contains(Path.GetExtension(projectFile));
 
       public static IEnumerable<string> GetDefaultReferences(string projectFile)
       {
@@ -177,12 +144,10 @@ namespace NuBuild.MSBuild
             return Enumerable.Empty<string>();
       }
 
-      public static string GetNupkgsFullPath(string projectFullPath, string outputPath)
-      {
-         return Path.Combine(
+      public static string GetNupkgsFullPath(string projectFullPath, string outputPath) =>
+         Path.Combine(
             outputPath,
             Path.GetFileNameWithoutExtension(projectFullPath) + ".nupkgs");
-      }
 
       public static string GetSolutionDir(string projectDirectory)
       {
@@ -205,19 +170,14 @@ namespace NuBuild.MSBuild
          return null;
       }
 
-      private static bool SolutionFileExists(string path)
-      {
-         return Directory.GetFiles(path, "*.sln").Any();
-      }
+      private static bool SolutionFileExists(string path) => Directory.GetFiles(path, "*.sln").Any();
 
-      private static bool HasNuspecFile(string projectFile)
-      {
-         return Directory
+      private static bool HasNuspecFile(string projectFile) =>
+         Directory
             .EnumerateFiles(
                Path.GetDirectoryName(projectFile),
                "*" + Constants.ManifestExtension,
                SearchOption.AllDirectories)
             .Any();
-      }
    }
 }

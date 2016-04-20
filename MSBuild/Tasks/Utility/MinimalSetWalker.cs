@@ -43,25 +43,15 @@ namespace NuBuild.MSBuild
          this.repository = new ReadOnlyPackageRepository(packages.ToList());
       }
 
-      public static IEnumerable<IPackage> GetMinimalSet(List<IPackage> packages, FrameworkName targetFramework)
-      {
-         return new MinimalSetWalker(packages, targetFramework).GetMinimalSet();
-      }
+      public static IEnumerable<IPackage> GetMinimalSet(List<IPackage> packages, FrameworkName targetFramework) =>
+         new MinimalSetWalker(packages, targetFramework).GetMinimalSet();
 
-      protected override bool SkipDependencyResolveError
-      {
-         get
-         {
-            // For the pack command, when don't need to throw if a dependency is missing 
-            // from a nuspec file.
-            return true;
-         }
-      }
+      // For the pack command, when don't need to throw if a dependency is missing 
+      // from a nuspec file.
+      protected override bool SkipDependencyResolveError => true;
 
-      protected override IPackage ResolveDependency(PackageDependency dependency)
-      {
-         return repository.ResolveDependency(dependency, allowPrereleaseVersions: false, preferListedPackages: false);
-      }
+      protected override IPackage ResolveDependency(PackageDependency dependency) =>
+         repository.ResolveDependency(dependency, allowPrereleaseVersions: false, preferListedPackages: false);
 
       protected override bool OnAfterResolveDependency(IPackage package, IPackage dependency)
       {

@@ -8,9 +8,9 @@ namespace NuBuild.VS
 {
    public class EnumDescription
    {
-      public int Key { get; private set; }
-      public string Value { get; private set; }
-      public string Description { get; private set; }
+      public int Key { get; }
+      public string Value { get; }
+      public string Description { get; }
 
       public EnumDescription(int key, string value, string description)
       {
@@ -19,9 +19,6 @@ namespace NuBuild.VS
          this.Description = description;
       }
 
-      public override string ToString()
-      {
-         return Value;
-      }
+      public override string ToString() => Value;
    }
 }

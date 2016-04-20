@@ -79,13 +79,7 @@ namespace CSVSXProjectSubType.PropertyPageBase
       /// <summary>
       /// Get the size of this UserControl.
       /// </summary>
-      public Size ViewSize
-      {
-         get
-         {
-            return base.Size;
-         }
-      }
+      public Size ViewSize => base.Size;
 
       /// <summary>
       /// Make the PageView hide.

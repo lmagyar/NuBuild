@@ -20,7 +20,7 @@
     <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <VsTemplateLanguage>CSharp</VsTemplateLanguage>
-    <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>

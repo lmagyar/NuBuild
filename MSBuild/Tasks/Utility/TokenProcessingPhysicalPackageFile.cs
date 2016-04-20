@@ -41,11 +41,9 @@ namespace NuBuild.MSBuild
 
       #region IPackageFile Implementation
 
-      public new Stream GetStream()
-      {
-         return _tokenRegex.Replace(propertyProvider.Process(base.GetStream().ReadToEnd()),
+      public new Stream GetStream() =>
+         _tokenRegex.Replace(propertyProvider.Process(base.GetStream().ReadToEnd()),
              match => "$" + match.Groups["propertyName"].Value + "$").AsStream();
-      }
 
       #endregion
 
@@ -57,9 +55,6 @@ namespace NuBuild.MSBuild
                                 String.Equals(TargetPath, file.TargetPath, StringComparison.OrdinalIgnoreCase);
       }
 
-      public override int GetHashCode()
-      {
-         return base.GetHashCode();
-      }
+      public override int GetHashCode() => base.GetHashCode();
    }
 }

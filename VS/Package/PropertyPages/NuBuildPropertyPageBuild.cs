@@ -35,37 +35,25 @@ namespace NuBuild.VS
       /// <summary>
       /// Help keyword that should be associated with the page
       /// </summary>
-      protected override string HelpKeyword
-      {
-         // TODO: Put your help keyword here
-         get { return String.Empty; }
-      }
+      // TODO: Put your help keyword here
+      protected override string HelpKeyword => String.Empty;
 
       /// <summary>
       /// Title of the property page.
       /// </summary>
-      public override string Title
-      {
-         get { return "Build"; }
-      }
+      public override string Title => "Build";
 
       /// <summary>
       /// Provide the view of our properties.
       /// </summary>
       /// <returns></returns>
-      protected override IPageView GetNewPageView()
-      {
-         return new NuBuildPropertyPageBuildView(this);
-      }
+      protected override IPageView GetNewPageView() => new NuBuildPropertyPageBuildView(this);
 
       /// <summary>
       /// Use a store implementation designed for flavors.
       /// </summary>
       /// <returns>Store for our properties</returns>
-      protected override IPropertyStore GetNewPropertyStore()
-      {
-         return new NuBuildPropertyPagePropertyStore();
-      }
+      protected override IPropertyStore GetNewPropertyStore() => new NuBuildPropertyPagePropertyStore();
 
       #endregion
    }

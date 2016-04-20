@@ -71,8 +71,8 @@ namespace NuBuild.MSBuild
          this.log = log;
       }
 
-      public Collection<FrameworkAssemblyReference> FrameworkReferences { get { return frameworkReferences; } }
-      public Collection<PackageDependencySet> DependencySets { get { return dependencySets; } }
+      public Collection<FrameworkAssemblyReference> FrameworkReferences => frameworkReferences;
+      public Collection<PackageDependencySet> DependencySets => dependencySets;
 
       public void CalculateMinimalSet(ITaskItem[] referenceProjects, ITaskItem[] referenceLibraries, PackageBuilder builder)
       {
